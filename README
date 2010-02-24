@@ -1,0 +1,50 @@
+ FCBKcomplete 2.6.1
+ - Jquery version required: 1.2.x, 1.3.x
+ 
+ Changelog:
+ - 2.00	new version of fcbkcomplete
+ 
+ - 2.01 fixed bugs & added features
+ 		fixed filter bug for preadded items
+		focus on the input after selecting tag
+		the element removed pressing backspace when the element is selected
+		input tag in the control has a border in IE7
+		added iterate over each match and apply the plugin separately
+		set focus on the input after selecting tag
+ 
+ - 2.02 fixed fist element selected bug
+		fixed defaultfilter error bug
+ 
+ - 2.5 	removed selected="selected" attribute due ie bug
+		element search algorithm changed
+		better performance fix added
+		fixed many small bugs
+		onselect event added
+		onremove event added
+ 
+ - 2.6 	ie6/7 support fix added
+		added new public method addItem due request
+		added new options "firstselected" that you can set true/false to select first element on dropdown list
+		autoexpand input element added
+		removeItem bug fixed
+		and many more bug fixed
+ 		fixed public method to use it $("elem").trigger("addItem",[{"title": "test", "value": "test"}]);
+		
+- 2.7 jquery 1.4 compability
+ 		item lock possability added by adding locked class to preadded option <option value="value" class="selected locked">text</option>
+ 		maximum item that can be added to the list		
+Coded by: emposha <admin@emposha.com>
+Copyright: Emposha.com <http://www.emposha.com/> - Distributed under MIT - Keep this message!
+
+ json_url         - url to fetch json object
+ cache       		- use cache
+ height           - maximum number of element shown before scroll will apear
+ newel            - show typed text like a element
+ firstselected	- automaticly select first element from dropdown
+ filter_case      - case sensitive filter
+ filter_selected  - filter selected items from list
+ complete_text    - text for complete page
+ maxshownitems	- maximum numbers that will be shown at dropdown list (less better performance)
+ onselect			- fire event on item select
+ onremove			- fire event on item remove
+ maxitimes		- maximum items that can be added
