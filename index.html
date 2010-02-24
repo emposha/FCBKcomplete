@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>FCBKcomplete Demo</title>
+    
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen" title="Test Stylesheet" charset="utf-8" />
+    <script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="jquery.fcbkcomplete.js" type="text/javascript" charset="utf-8"></script>    
+  </head>
+  
+  <body id="test">    
+    <h1>FCBKcomplete Demo</h1>
+    <div id="text"></div>
+    <form action="submit.php" method="POST" accept-charset="utf-8">
+    <label>First Control:</label>
+      <select id="select1" name="select1">
+        <option value="test1">test1</option>
+        <option value="test3">test2</option>
+        <option value="test4">test3</option>
+      </select>
+      <br /><br /><br /><br />
+      <label>Second Control:</label>      
+      <select id="select2" name="select2">
+        <option value="testme1" class="selected locked">testme1</option>
+        <option value="testme2" class="selected">testme2</option>
+        <option value="testme3" class="selected">testme3</option>
+      </select>
+      <br /><br /> 
+      
+      <select id="select3" name="select3[]" multiple="multiple">
+        <option value="test1" selected="selected" rel="selected">test1</option>
+        <option value="test3">test2</option>
+        <option value="test3">test3</option>
+      </select>
+      
+      <br /><br />
+      <input type="submit" value="Send">     
+    </form>  
+    <script language="JavaScript">
+        $(document).ready(function() 
+        {        
+          $("#select1").fcbkcomplete();
+          
+          $("#select2").fcbkcomplete({
+            json_url: "fetched.txt",
+            cache: true,
+            filter_case: true,
+            filter_hide: true,
+			firstselected: true,
+            //onremove: "testme",
+			//onselect: "testme",
+            filter_selected: true,
+			maxitems: 5,
+            newel: true        
+          });		 
+        });
+		
+		function testme(item)
+	  	{	if ($.browser.mozilla) 
+			{
+				console.log(item);
+			}
+			else
+			{
+				alert(item);
+			}		  	
+	  	}    
+    </script>
+  </body>  
+</html>
