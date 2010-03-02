@@ -1,5 +1,5 @@
 /*
- FCBKcomplete 2.7
+ FCBKcomplete 2.7.1
  - Jquery version required: 1.2.x, 1.3.x, 1.4.x
  
  Changelog:
@@ -31,9 +31,13 @@
 		and many more bug fixed
  		fixed public method to use it $("elem").trigger("addItem",[{"title": "test", "value": "test"}]);
 		
-- 2.7 jquery 1.4 compability
+- 2.7 	jquery 1.4 compability
  		item lock possability added by adding locked class to preadded option <option value="value" class="selected locked">text</option>
- 		maximum item that can be added to the list		
+ 		maximum item that can be added
+
+- 2.7.1 bug fixed
+		ajax delay added thanks to http://github.com/dolorian
+		
  */
 /* Coded by: emposha <admin@emposha.com> */
 /* Copyright: Emposha.com <http://www.emposha.com/> - Distributed under MIT - Keep this message! */
@@ -134,7 +138,7 @@ jQuery(function($){
                 holder.append(li);
                 
                 $(aclose).click(function(){
-                    removeItem($(this));
+                    removeItem($(this).parent("li"));
                     return false;
                 });
                 
@@ -166,9 +170,8 @@ jQuery(function($){
             }
             
             function removeItem(item){
-                var parent = item.parent("li");
-                if (!parent.hasClass('locked')) {
-                    parent.fadeOut("fast");
+                if (!item.hasClass('locked')) {
+                    item.fadeOut("fast");
                     if (options.onremove.length) {
                         var _item = element.children("option[value=" + item.attr("rel") + "]");
                         funCall(options.onremove, _item)
@@ -183,7 +186,8 @@ jQuery(function($){
             function addInput(focusme){
                 var li = $(document.createElement("li"));
                 var input = $(document.createElement("input"));
-                
+                var getBoxTimeout = 0;
+				
                 li.attr({
                     "class": "bit-input",
                     "id": elemid + "_annoninput"
@@ -264,12 +268,17 @@ jQuery(function($){
                                 bindEvents();
                             }
                             else {
-                                $.getJSON(options.json_url + "?tag=" + etext, null, function(data){
-                                    addMembers(etext, data);
-                                    json_cache = true;
-                                    bindEvents();
-                                });
-                            }
+                                getBoxTimeout++;
+                                var getBoxTimeoutValue = getBoxTimeout;   
+                                setTimeout (function() {
+                                    if (getBoxTimeoutValue != getBoxTimeout) return;
+                                    $.getJSON(options.json_url + ( options.json_url.indexOf("?") > -1 ? "&" : "?" ) + "tag=" + etext, null, function (data) {
+                                        addMembers(etext, data);
+                                        json_cache = true;
+                                        bindEvents();
+                                    });
+                                }, options.delay);                            
+							}
                         }
                         else {
                             addMembers(etext);
@@ -562,7 +571,8 @@ jQuery(function($){
                 maxshownitems: 30,
                 maxitems: 0,
                 onselect: "",
-                onremove: ""
+                onremove: "",
+				delay: 350
             }, opt);
             
             //system variables
