@@ -54,6 +54,7 @@
  * onselect			- fire event on item select
  * onremove			- fire event on item remove
  * maxitimes		- maximum items that can be added
+ * delay			- delay between ajax request (bigger delay, lower server time request)
  */
 jQuery(function($){
     $.fn.fcbkcomplete = function(opt){
