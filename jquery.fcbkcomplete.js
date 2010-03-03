@@ -37,7 +37,7 @@
 
 - 2.7.1 bug fixed
 		ajax delay added thanks to http://github.com/dolorian
-		
+
  */
 /* Coded by: emposha <admin@emposha.com> */
 /* Copyright: Emposha.com <http://www.emposha.com/> - Distributed under MIT - Keep this message! */
@@ -177,8 +177,7 @@ jQuery(function($){
                         var _item = element.children("option[value=" + item.attr("rel") + "]");
                         funCall(options.onremove, _item)
                     }
-                    element.children("option[value=" + item.attr("rel") + "]").removeAttr("selected");
-                    element.children("option[value=" + item.attr("rel") + "]").removeClass("selected");
+                    element.children('option[value="' + item.attr("rel") + '"]').removeAttr("selected").removeClass("selected");
                     item.remove();
                     deleting = 0;
                 }
