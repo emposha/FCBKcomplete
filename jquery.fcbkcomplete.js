@@ -1,5 +1,5 @@
 /*
- FCBKcomplete 2.7.1
+ FCBKcomplete 2.7.2
  - Jquery version required: 1.2.x, 1.3.x, 1.4.x
  
  Changelog:
@@ -38,6 +38,8 @@
 - 2.7.1 bug fixed
 		ajax delay added thanks to http://github.com/dolorian
 
+- 2.7.2 some minor bug fixed
+		minified version recompacted due some problems
  */
 /* Coded by: emposha <admin@emposha.com> */
 /* Copyright: Emposha.com <http://www.emposha.com/> - Distributed under MIT - Keep this message! */
@@ -299,7 +301,7 @@ jQuery(function($){
             function addMembers(etext, data){
                 feed.html('');
                 
-                if (!options.cache) {
+                if (!options.cache && data != null) {
                     cache = new Array();
                     search_string = "";
                 }
@@ -569,7 +571,7 @@ jQuery(function($){
                 filter_hide: false,
                 complete_text: "Start to type...",
                 maxshownitems: 30,
-                maxitems: 0,
+                maxitems: 10,
                 onselect: "",
                 onremove: "",
 				delay: 350
