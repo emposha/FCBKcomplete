@@ -1,5 +1,5 @@
 /*
- FCBKcomplete 2.7.2
+ FCBKcomplete 2.7.4
  - Jquery version required: 1.2.x, 1.3.x, 1.4.x
  
  Changelog:
@@ -40,6 +40,13 @@
 
 - 2.7.2 some minor bug fixed
 		minified version recompacted due some problems
+		
+- 2.7.3 event call fixed thanks to William Parry <williamparry!at!gmail.com>
+
+- 2.7.4 standart event change call added on addItem, removeItem
+		preSet also check if item have "selected" attribute
+		addItem minor fix
+
  */
 /* Coded by: emposha <admin@emposha.com> */
 /* Copyright: Emposha.com <http://www.emposha.com/> - Distributed under MIT - Keep this message! */
@@ -98,7 +105,7 @@ jQuery(function($){
             function preSet(){
                 element.children("option").each(function(i, option){
                     option = $(option);
-                    if (option.hasClass("selected")) {
+                    if (option.hasClass("selected") || option.is(':selected')) {
                         addItem(option.text(), option.val(), true, option.hasClass("locked"));
                         option.attr("selected", "selected");
                     }
@@ -116,10 +123,10 @@ jQuery(function($){
             
             //public method to add new item
             $(this).bind("addItem", function(event, data){
-                addItem(data.title, data.value);
+                addItem(data.title, data.value, 0, 0, 0);
             });
             
-            function addItem(title, value, preadded, locked){
+            function addItem(title, value, preadded, locked, focusme){
                 if (!maxItems()) {
                     return false;
                 }
@@ -148,7 +155,7 @@ jQuery(function($){
                 if (!preadded) {
                     $("#" + elemid + "_annoninput").remove();
                     var _item;
-                    addInput(1);
+                    addInput(focusme);
                     if (element.children("option[value=" + value + "]").length) {
                         _item = element.children("option[value=" + value + "]");
                         _item.get(0).setAttribute("selected", "selected");
@@ -166,6 +173,7 @@ jQuery(function($){
                     if (options.onselect.length) {
                         funCall(options.onselect, _item)
                     }
+					element.change();
                 }
                 holder.children("li.bit-box.deleted").removeClass("deleted");
                 feed.hide();
@@ -181,6 +189,7 @@ jQuery(function($){
                     }
                     element.children('option[value="' + item.attr("rel") + '"]').removeAttr("selected").removeClass("selected");
                     item.remove();
+					element.change();
                     deleting = 0;
                 }
             }
@@ -222,7 +231,7 @@ jQuery(function($){
                 });
                 
                 input.keypress(function(event){
-                    if (event.keyCode == 13) {
+                    if (event.keyCode == 13 || event.keyCode == 9) {
                         return false;
                     }
                     //auto expand input							
@@ -439,7 +448,7 @@ jQuery(function($){
                         holder.children("li.bit-box.deleted").removeClass("deleted");
                     }
                     
-                    if (event.keyCode == 13 && checkFocusOn()) {
+                    if ((event.keyCode == 13 || event.keyCode == 9) && checkFocusOn()) {
                         var option = focuson;
                         addItem(option.text(), option.attr("rel"));
                         complete.hide();
@@ -448,7 +457,7 @@ jQuery(function($){
                         return false;
                     }
                     
-                    if (event.keyCode == 13 && !checkFocusOn()) {
+                    if ((event.keyCode == 13 || event.keyCode == 9) && !checkFocusOn()) {
                         if (options.newel) {
                             var value = xssPrevent($(this).val());
                             addItem(value, value);
@@ -536,12 +545,8 @@ jQuery(function($){
                     }
                 }
                 _object = "{" + _object + " notinuse: 0}";
-                try {
-                    eval(func + "(" + _object + ")");
-                } 
-                catch (ex) {
-                };
-                            }
+                func.call(func, _object);
+            }
             
             function checkFocusOn(){
                 if (focuson == null) {
