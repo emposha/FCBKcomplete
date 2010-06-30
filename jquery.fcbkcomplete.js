@@ -1,5 +1,5 @@
 /*
- FCBKcomplete 2.7.4
+ FCBKcomplete 2.7.5
  - Jquery version required: 1.2.x, 1.3.x, 1.4.x
  
  Changelog:
@@ -46,7 +46,11 @@
 - 2.7.4 standart event change call added on addItem, removeItem
 		preSet also check if item have "selected" attribute
 		addItem minor fix
-
+		
+- 2.7.5 added options "chooseOnEnter,chooseOnTab,chooseOnComma" to control what keys trigger selection
+		added option "keepPromptAfterChoose" to control if we stay selected/focused after choosing an option
+		added options "forceWidth" and "autoWidth" to control width setting (if both are null || false, no width is set in JS) 
+		
  */
 /* Coded by: emposha <admin@emposha.com> */
 /* Copyright: Emposha.com <http://www.emposha.com/> - Distributed under MIT - Keep this message! */
@@ -99,7 +103,12 @@ jQuery(function($){
                 
                 complete.prepend(feed);
                 holder.after(complete);
-                feed.css("width", complete.width());
+                
+                if (options.forceWidth) {
+                	feed.css("width", options.width);
+                } else if (options.autoWidth) {
+                	feed.css("width", complete.width());
+                } 
             }
             
             function preSet(){
@@ -368,19 +377,19 @@ jQuery(function($){
                         "overflow": "auto"
                     });
                     if (browser_msie) {
-                        browser_msie_frame.css({
-                            "height": (options.height * 24) + "px",
-                            "width": feed.width() + "px"
-                        }).show();
+                    	if (options.autoWidth) {
+                    		browser_msie_frame.css({"width": feed.width() + "px"});
+                    	}
+                        browser_msie_frame.css({"height": (options.height * 24) + "px"}).show();
                     }
                 }
                 else {
                     feed.css("height", "auto");
                     if (browser_msie) {
-                        browser_msie_frame.css({
-                            "height": feed.height() + "px",
-                            "width": feed.width() + "px"
-                        }).show();
+                    	if (options.autoWidth) {
+                    		browser_msie_frame.css({"width": feed.width() + "px"});
+                    	}
+                        browser_msie_frame.css({"height": feed.height() + "px"}).show();
                     }
                 }
             }
@@ -447,25 +456,33 @@ jQuery(function($){
                     if (event.keyCode != 8) {
                         holder.children("li.bit-box.deleted").removeClass("deleted");
                     }
-                    
-                    if ((event.keyCode == 13 || event.keyCode == 9) && checkFocusOn()) {
-                        var option = focuson;
-                        addItem(option.text(), option.attr("rel"));
-                        complete.hide();
-                        event.preventDefault();
-                        focuson = null;
-                        return false;
-                    }
-                    
-                    if ((event.keyCode == 13 || event.keyCode == 9) && !checkFocusOn()) {
-                        if (options.newel) {
-                            var value = xssPrevent($(this).val());
-                            addItem(value, value);
-                            complete.hide();
-                            event.preventDefault();
-                            focuson = null;
-                        }
-                        return false;
+                    /* Triggers an "submit" event */
+                    if ((event.keyCode == 13 && options.chooseOnEnter) || 
+                    	(event.keyCode == 9 && options.chooseOnTab) || 
+                    	(event.keyCode == 188 && options.chooseOnComma)) {
+                    	if (checkFocusOn()) {
+							var option = focuson;
+							addItem(option.text(), option.attr("rel"));
+							complete.hide();
+							event.preventDefault();
+							focuson = null;
+							if (options.keepPromptAfterChoose) {
+								holder.trigger("click");
+							}
+							return false;
+						} else {
+							if (options.newel) {
+								var value = xssPrevent($(this).val());
+								addItem(value, value);
+								complete.hide();
+								event.preventDefault();
+								focuson = null;
+							}
+							if (options.keepPromptAfterChoose) {
+								holder.trigger("click");
+							}
+							return false;
+						}
                     }
                     
                     if (event.keyCode == 40) {
@@ -579,7 +596,13 @@ jQuery(function($){
                 maxitems: 10,
                 onselect: "",
                 onremove: "",
-				delay: 350
+				delay: 350,
+				forceWidth: null,
+				autoWidth: true,
+				chooseOnComma: true,
+				chooseOnTab: true,
+				chooseOnEnter: true,
+				keepPromptAfterChoose: true
             }, opt);
             
             //system variables
