@@ -336,6 +336,7 @@ jQuery(function($){
                             input.focus();
                             input.keyup();
                         }
+                        moveToTop(feed)
                         feed.show();
                     }
                     else {
@@ -429,6 +430,7 @@ jQuery(function($){
                         }
                         fcbkPosition();
                         complete.children(".default").hide();
+                        moveToTop(feed)
                         feed.show();
                     }
                 });
