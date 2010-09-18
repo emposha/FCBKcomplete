@@ -66,9 +66,14 @@
  * delay			- delay between ajax request (bigger delay, lower server time request)
  * default_search                              - For a default search seacrh string. '.*?' is used to show all by default
  * preset_update                              - to make converted selects skip selected items
+ * used_vals                                    - for connected select elements that have a pre-selected values, this is used to filter out selected elements
+ * connect_with                               - other autocompletes to connect the selected autocomplete with, for linked selects initialized together, using the 'Array' is recommended
+ *                                                     so as to use less memory. Not like there will be much memory used up to begin with.
  */
 jQuery(function($){
     $.fn.fcbkcomplete = function(opt){
+        var used_vals = $.isArray(opt.used_vals)?opt.used_vals:[];
+
         return this.each(function(){
             function init(){
                 createFCBK();
@@ -76,6 +81,15 @@ jQuery(function($){
                 fcbkPosition();
                 addInput(0);
                 moveToTop(complete.parent());
+                element.data('setSelected', function(val, disable){
+                    var pos = $.inArray(val, elm_selected);
+                    if(disable && pos < 0){
+                        elm_selected.push(val);
+                    }
+                    else if(!disable && pos > -1){
+                        elm_selected.splice(pos, 1);                    
+                    }
+                });
             }
 
             function fcbkPosition(){
@@ -92,16 +106,13 @@ jQuery(function($){
             }
 
             function setSelecton(val, disable){
-                if(options.group){
-                    $(options.group).each(function(){
-                        var sel = $(this)
-
-                        if(sel.is('select') && sel[0] != element){
-                            var option = sel.find('option[value="'+ val +'"]');
-                            if(options.length == 0){
-                                option = sel.find(':contains("' + val + '")');
+                if(options.connect_with){
+                    $(options.connect_with).each(function(){
+                        if(this != element[0]){
+                            var fun = $(this).data('setSelected');
+                            if(typeof fun == 'function'){
+                                fun(val, disable);
                             }
-                            option.data('disabled', disable)
                         }
                     });
                 }
@@ -166,7 +177,7 @@ jQuery(function($){
                 else{
                     element.children("option").each(function(i, option){
                         option = $(option);
-                        if (option.hasClass("selected") || option.is(':selected')) {
+                        if(option.hasClass("selected") || option.is(':selected')) {
                             addItem(option.text(), option.val(), true, option.hasClass("locked"));
                             option.attr("selected", "selected");
                         }
@@ -182,7 +193,7 @@ jQuery(function($){
                     });
                 }
             }
-            
+
             //public method to add new item
             $(this).bind("addItem", function(event, data){
                 addItem(data.title, data.value, 0, 0, 0);
@@ -232,6 +243,13 @@ jQuery(function($){
                         _item.text(title);
                         element.append(_item);
                     }
+
+                    if(options.connect_with == 'Array' && $.inArray(value, used_vals) < 0){
+                        used_vals.push(value.toString());
+                    }
+                    else if(options.connect_with && options.connect_with != 'Array' ){
+                        setSelecton(value.toString(), true)
+                    }
                     if (typeof options.onselect == 'function') {
                         funCall(options.onselect, _item)
                     }
@@ -245,8 +263,19 @@ jQuery(function($){
             function removeItem(item){
                 if (!item.hasClass('locked')) {
                     item.fadeOut("fast");
+                    var value = item.attr("rel");
+                    if(options.connect_with == 'Array'){
+                        var pos = $.inArray(value, used_vals);
+                        if(pos > -1){
+                            used_vals.splice(pos, 1);
+                        }
+                    }
+                    else if(options.connect_with && options.connect_with != 'Array'){
+                        setSelecton(value, false)
+                    }
+
                     if (typeof options.onremove == 'function') {
-                        var _item = element.children("option[value=" + item.attr("rel") + "]");
+                        var _item = element.children("option[value=" + value + "]");
                         funCall(options.onremove, _item)
                     }
                     element.children('option[value="' + item.attr("rel") + '"]').removeAttr("selected").removeClass("selected");
@@ -282,10 +311,9 @@ jQuery(function($){
                 });
                 
                 holder.click(function(){
-                    input.focus();
                     fcbkPosition();
                     if (feed.length && (input.val().length || options.default_search.length)) {
-                        if(options.default_search.length){
+                        if(options.default_search.length && !input.val().length){
                             input.focus();
                             input.keyup();
                         }
@@ -393,7 +421,7 @@ jQuery(function($){
                     }, 1);
                 }
             }
-            
+
             function addMembers(etext, data){
                 feed.html('');
                 etext = etext == ''?options.default_search:etext;
@@ -435,12 +463,22 @@ jQuery(function($){
                 while (match != null && maximum > 0) {
                     var id = match[1];
                     var object = cache[id];
-                    var elm = element.children("option[value=" + object.value + "]");
-                    if(elm.length == 0){
-                        elm = element.children(":contains('" + object.value + "')");
+                    var op_selected = $.inArray(object.value.toString(), elm_selected);
+                    if(op_selected < 0 && options.connect_with == 'Array'){
+                        op_selected = $.inArray(object.value.toString(), used_vals);
                     }
-                    var elm_selected = (elm.length > 0 && options.filter_selected && (elm.is(".selected") || elm.is(":selected")));
-                    if(!elm_selected){
+                    if(op_selected < 0){
+                        var elm = element.children("option[value=" + object.value + "]");
+                        if(elm.length == 0){
+                            elm = element.children(":contains('" + object.value + "')");
+                        }
+                        op_selected = (elm.length > 0 && options.filter_selected && (elm.is(".selected") || elm.is(":selected")));
+                    }
+                    else{
+                        op_selected = true;
+                    }
+
+                    if(!op_selected){
                         content += '<li rel="' + object.value + '">' + itemIllumination(object.caption, etext) + '</li>';
                         counter++;
                         maximum--;
@@ -672,6 +710,7 @@ jQuery(function($){
                 preset_update:true,
                 maxitems: 10,
                 data: false,
+                connect_with:false,
                 onselect: "",
                 onremove: "",
                 delay: 350
@@ -693,6 +732,7 @@ jQuery(function($){
             var elemid = element.attr("id");
             var li_annon = null;
             var input = null;
+            var elm_selected = new Array();
             elemid = (elemid != '' && elemid !=null)?elemid:'fcbkselect_'+ Math.floor(Math.random() * 100000);
             init();
             

@@ -41,19 +41,20 @@
     <script language="JavaScript">
         $(document).ready(function() 
         {        
-          $("#select1").fcbkcomplete();
+          //$("#select1").fcbkcomplete();
           
-          $("#select2").fcbkcomplete({
+          $("#select2, #select1").fcbkcomplete({
             json_url: "data.txt",
             cache: true,
             filter_case: true,
             filter_hide: true,
-			firstselected: true,
+            connect_with:'#select2, #select1',
+	//		firstselected: true,
             //onremove: "testme",
 			//onselect: "testme",
             filter_selected: true,
 			maxitems: 5,
-            newel: true        
+            //newel: true        
           });		 
         });
 		
