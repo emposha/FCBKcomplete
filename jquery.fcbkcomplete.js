@@ -82,7 +82,7 @@
  */
 jQuery(function($){
     $.fn.fcbkcomplete = function(opt){
-        var used_vals = $.isArray(opt.used_vals)?opt.used_vals:[];
+        var used_vals = (opt.used_vals != undefined && $.isArray(opt.used_vals))?opt.used_vals:[];
 
         return this.each(function(){
             function init(){
@@ -463,21 +463,21 @@ jQuery(function($){
                         search_string += "" + (cache.length - 1) + ":" + val.caption + ";";
                     });
                 }
-                
+
                 var maximum = options.maxshownitems < cache.length ? options.maxshownitems : cache.length;
                 var filter = "i";
                 if (options.filter_case) {
                     filter = "";
                 }
-                
+
                 var myregexp, match;
                 try {
                     myregexp = eval('/(?:^|;)\\s*(\\d+)\\s*:[^;]*?' + etext + '[^;]*/g' + filter);
                     match = myregexp.exec(search_string);
-                } 
+                }
                 catch (ex) {
                 };
-                
+
                 var content = '';
                 while (match != null && maximum > 0) {
                     var id = match[1];
@@ -504,8 +504,8 @@ jQuery(function($){
                     }
                     match = myregexp.exec(search_string);
                 }
+
                 feed.append(content);
-                
                 if (options.firstselected) {
                     focuson = feed.children("li:visible:first");
                     focuson.addClass("auto-focus");
@@ -517,19 +517,27 @@ jQuery(function($){
                         "overflow": "auto"
                     });
                     if (browser_msie) {
-                    	if (options.autoWidth) {
-                            browser_msie_frame.css({"width": feed.width() + "px"});
-                    	}
-                        browser_msie_frame.css({"height": (options.height * 24) + "px"}).show();
+                        if (options.autoWidth) {
+                            browser_msie_frame.css({
+                                "width": feed.width() + "px"
+                                });
+                        }
+                        browser_msie_frame.css({
+                            "height": (options.height * 24) + "px"
+                            }).show();
                     }
                 }
                 else {
                     feed.css("height", "auto");
                     if (browser_msie) {
-                    	if (options.autoWidth) {
-                            browser_msie_frame.css({"width": feed.width() + "px"});
-                    	}
-                        browser_msie_frame.css({"height": feed.height() + "px"}).show();
+                        if (options.autoWidth) {
+                            browser_msie_frame.css({
+                                "width": feed.width() + "px"
+                                });
+                        }
+                        browser_msie_frame.css({
+                            "height": feed.height() + "px"
+                            }).show();
                     }
                 }
             }
@@ -598,9 +606,9 @@ jQuery(function($){
                     }
                     /* Triggers an "submit" event */
                     if ((event.keyCode == 13 && options.chooseOnEnter) || 
-                    	(event.keyCode == 9 && options.chooseOnTab) || 
-                    	(event.keyCode == 188 && options.chooseOnComma)) {
-                    	if (checkFocusOn()) {
+                        (event.keyCode == 9 && options.chooseOnTab) || 
+                        (event.keyCode == 188 && options.chooseOnComma)) {
+                        if (checkFocusOn()) {
                             var option = focuson;
                             addItem(option.text(), option.attr("rel"));
                             complete.hide();
@@ -731,22 +739,23 @@ jQuery(function($){
                 firstselected: false,
                 filter_case: false,
                 filter_hide: false,
-                complete_text: "Start to type...",
-                default_search : '.*?',
+                complete_text:"Start to type...",
+                default_search:'.*?',
                 maxshownitems: 30,
                 preset_update:true,
-                maxitems: 10,
-                data: false,
+                maxitems:10,
+                data:false,
                 connect_with:false,
-                onselect: "",
-                onremove: "",
+                onselect:"",
+                onremove:"",
                 delay:10,
-                forceWidth: null,
-                autoWidth: true,
-                chooseOnComma: true,
-                chooseOnTab: true,
-                chooseOnEnter: true,
-                keepPromptAfterChoose: true
+                used_vals:new Array(),
+                forceWidth:null,
+                autoWidth:true,
+                chooseOnComma:true,
+                chooseOnTab:true,
+                chooseOnEnter:true,
+                keepPromptAfterChoose:true
             }, opt);
             
             //system variables
