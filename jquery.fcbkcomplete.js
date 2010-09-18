@@ -68,14 +68,58 @@
  * onremove			- fire event on item remove
  * maxitimes		- maximum items that can be added
  * delay			- delay between ajax request (bigger delay, lower server time request)
+ * default_search                              - For a default search seacrh string. '.*?' is used to show all by default
+ * preset_update                              - to make converted selects skip selected items
+ * used_vals                                    - for connected select elements that have a pre-selected values, this is used to filter out selected elements
+ * connect_with                               - other autocompletes to connect the selected autocomplete with, for linked selects initialized together, using the 'Array' is recommended
+ *                                                     so as to use less memory. Not like there will be much memory used up to begin with.
  */
 jQuery(function($){
     $.fn.fcbkcomplete = function(opt){
+        var used_vals = $.isArray(opt.used_vals)?opt.used_vals:[];
+
         return this.each(function(){
             function init(){
                 createFCBK();
                 preSet();
+                fcbkPosition();
                 addInput(0);
+                moveToTop(complete.parent());
+                element.data('setSelected', function(val, disable){
+                    var pos = $.inArray(val, elm_selected);
+                    if(disable && pos < 0){
+                        elm_selected.push(val);
+                    }
+                    else if(!disable && pos > -1){
+                        elm_selected.splice(pos, 1);                    
+                    }
+                });
+            }
+
+            function fcbkPosition(){
+                setTimeout(function(){
+                    var prev = complete.prev();
+                    var offset = prev.position();
+
+                    complete.css({
+                        top:(offset.top + prev.outerHeight(true)),
+                        position:'absolute',
+                        left:offset.left
+                    });
+                }, 0);
+            }
+
+            function setSelecton(val, disable){
+                if(options.connect_with){
+                    $(options.connect_with).each(function(){
+                        if(this != element[0]){
+                            var fun = $(this).data('setSelected');
+                            if(typeof fun == 'function'){
+                                fun(val, disable);
+                            }
+                        }
+                    });
+                }
             }
             
             function createFCBK(){
@@ -100,36 +144,69 @@ jQuery(function($){
                 
                 feed = $(document.createElement("ul"));
                 feed.attr("id", elemid + "_feed");
-                
                 complete.prepend(feed);
                 holder.after(complete);
-                
+                feed.css({
+                    position:'absolute',
+                });
                 if (options.forceWidth) {
-                	feed.css("width", options.width);
+                    feed.css("width", options.width);
                 } else if (options.autoWidth) {
-                	feed.css("width", complete.width());
+                    feed.css("width", complete.width());
+                } 
+            }
+
+            function moveToTop(id){
+                var max_index = 0;
+                var elm = $(id);
+
+                $('div').each(function(){
+                    var temp_index = parseInt($(this).css("z-index"));
+
+                    if(elm [0] != this && temp_index > max_index){
+                        max_index = temp_index;
+                    }
+                });
+
+                elm.css({
+                    'z-index':(max_index + 1)
+                });                
+                if (options.forceWidth) {
+                    feed.css("width", options.width);
+                } else if (options.autoWidth) {
+                    feed.css("width", complete.width());
                 } 
             }
             
             function preSet(){
-                element.children("option").each(function(i, option){
-                    option = $(option);
-                    if (option.hasClass("selected") || option.is(':selected')) {
-                        addItem(option.text(), option.val(), true, option.hasClass("locked"));
-                        option.attr("selected", "selected");
-                    }
-                    else {
-                        option.removeAttr("selected");
-                    }
-                    
-                    cache.push({
-                        caption: option.text(),
-                        value: option.val()
+                if(options.data && $.isArray(options.data)){
+                    $.each(options.data, function(index, value){
+                        cache.push({
+                            caption: value.name,
+                            value: value.id
+                        });
                     });
-                    search_string += "" + (cache.length - 1) + ":" + option.text() + ";";
-                });
+                }
+                else{
+                    element.children("option").each(function(i, option){
+                        option = $(option);
+                        if(option.hasClass("selected") || option.is(':selected')) {
+                            addItem(option.text(), option.val(), true, option.hasClass("locked"));
+                            option.attr("selected", "selected");
+                        }
+                        else {
+                            option.removeAttr("selected");
+                        }
+                    
+                        cache.push({
+                            caption: option.text(),
+                            value: option.val()
+                        });
+                        search_string += "" + (cache.length - 1) + ":" + option.text() + ";";
+                    });
+                }
             }
-            
+
             //public method to add new item
             $(this).bind("addItem", function(event, data){
                 addItem(data.title, data.value, 0, 0, 0);
@@ -162,7 +239,7 @@ jQuery(function($){
                 });
                 
                 if (!preadded) {
-                    $("#" + elemid + "_annoninput").remove();
+                    li_annon.remove();
                     var _item;
                     addInput(focusme);
                     if (element.children("option[value=" + value + "]").length) {
@@ -179,10 +256,17 @@ jQuery(function($){
                         _item.text(title);
                         element.append(_item);
                     }
-                    if (options.onselect.length) {
+
+                    if(options.connect_with == 'Array' && $.inArray(value, used_vals) < 0){
+                        used_vals.push(value.toString());
+                    }
+                    else if(options.connect_with && options.connect_with != 'Array' ){
+                        setSelecton(value.toString(), true)
+                    }
+                    if (typeof options.onselect == 'function') {
                         funCall(options.onselect, _item)
                     }
-					element.change();
+                    element.change();
                 }
                 holder.children("li.bit-box.deleted").removeClass("deleted");
                 feed.hide();
@@ -192,20 +276,32 @@ jQuery(function($){
             function removeItem(item){
                 if (!item.hasClass('locked')) {
                     item.fadeOut("fast");
-                    if (options.onremove.length) {
-                        var _item = element.children("option[value=" + item.attr("rel") + "]");
+                    var value = item.attr("rel");
+                    if(options.connect_with == 'Array'){
+                        var pos = $.inArray(value, used_vals);
+                        if(pos > -1){
+                            used_vals.splice(pos, 1);
+                        }
+                    }
+                    else if(options.connect_with && options.connect_with != 'Array'){
+                        setSelecton(value, false)
+                    }
+
+                    if (typeof options.onremove == 'function') {
+                        var _item = element.children("option[value=" + value + "]");
                         funCall(options.onremove, _item)
                     }
                     element.children('option[value="' + item.attr("rel") + '"]').removeAttr("selected").removeClass("selected");
                     item.remove();
-					element.change();
+                    element.change();
                     deleting = 0;
                 }
             }
             
             function addInput(focusme){
-                var li = $(document.createElement("li"));
-                var input = $(document.createElement("input"));
+                li_annon = $(document.createElement("li"));
+                var li = li_annon;
+                input = $(document.createElement("input"));
                 var getBoxTimeout = 0;
 				
                 li.attr({
@@ -228,8 +324,12 @@ jQuery(function($){
                 });
                 
                 holder.click(function(){
-                    input.focus();
-                    if (feed.length && input.val().length) {
+                    fcbkPosition();
+                    if (feed.length && (input.val().length || options.default_search.length)) {
+                        if(options.default_search.length && !input.val().length){
+                            input.focus();
+                            input.keyup();
+                        }
                         feed.show();
                     }
                     else {
@@ -256,7 +356,8 @@ jQuery(function($){
                 });
                 
                 input.keyup(function(event){
-                    var etext = xssPrevent(input.val());
+                    var inp_val = input.val();
+                    var etext = xssPrevent(inp_val == ''?options.default_search:inp_val);
                     
                     if (event.keyCode == 8 && etext.length == 0) {
                         feed.hide();
@@ -298,12 +399,29 @@ jQuery(function($){
                                         bindEvents();
                                     });
                                 }, options.delay);                            
-							}
+                            }
                         }
                         else {
-                            addMembers(etext);
+                            var data = undefined
+                            if(options.preset_update){
+                                data = new Array();
+                                element.children("option").each(function(i, option){
+                                    option = $(option);
+                                    if(option.is(':selected') || option.is('.selected')){
+                                        return undefined;
+                                    }
+
+                                    data.push({
+                                        caption: option.text(),
+                                        value: option.val()
+                                    });
+                                });
+                            }
+
+                            addMembers(etext, data);
                             bindEvents();
                         }
+                        fcbkPosition();
                         complete.children(".default").hide();
                         feed.show();
                     }
@@ -311,21 +429,25 @@ jQuery(function($){
                 if (focusme) {
                     setTimeout(function(){
                         input.focus();
+                        fcbkPosition();
                         complete.children(".default").show();
                     }, 1);
                 }
             }
-            
+
             function addMembers(etext, data){
                 feed.html('');
-                
+                etext = etext == ''?options.default_search:etext;
+
                 if (!options.cache && data != null) {
                     cache = new Array();
                     search_string = "";
                 }
                 
-                addTextItem(etext);
-                
+                if(options.default_search != etext){
+                    addTextItem(etext);
+                }
+
                 if (data != null && data.length) {
                     $.each(data, function(i, val){
                         cache.push({
@@ -354,10 +476,22 @@ jQuery(function($){
                 while (match != null && maximum > 0) {
                     var id = match[1];
                     var object = cache[id];
-                    if (options.filter_selected && element.children("option[value=" + object.value + "]").hasClass("selected")) {
-                        //nothing here...
+                    var op_selected = $.inArray(object.value.toString(), elm_selected);
+                    if(op_selected < 0 && options.connect_with == 'Array'){
+                        op_selected = $.inArray(object.value.toString(), used_vals);
                     }
-                    else {
+                    if(op_selected < 0){
+                        var elm = element.children("option[value=" + object.value + "]");
+                        if(elm.length == 0){
+                            elm = element.children(":contains('" + object.value + "')");
+                        }
+                        op_selected = (elm.length > 0 && options.filter_selected && (elm.is(".selected") || elm.is(":selected")));
+                    }
+                    else{
+                        op_selected = true;
+                    }
+
+                    if(!op_selected){
                         content += '<li rel="' + object.value + '">' + itemIllumination(object.caption, etext) + '</li>';
                         counter++;
                         maximum--;
@@ -378,7 +512,7 @@ jQuery(function($){
                     });
                     if (browser_msie) {
                     	if (options.autoWidth) {
-                    		browser_msie_frame.css({"width": feed.width() + "px"});
+                            browser_msie_frame.css({"width": feed.width() + "px"});
                     	}
                         browser_msie_frame.css({"height": (options.height * 24) + "px"}).show();
                     }
@@ -387,7 +521,7 @@ jQuery(function($){
                     feed.css("height", "auto");
                     if (browser_msie) {
                     	if (options.autoWidth) {
-                    		browser_msie_frame.css({"width": feed.width() + "px"});
+                            browser_msie_frame.css({"width": feed.width() + "px"});
                     	}
                         browser_msie_frame.css({"height": feed.height() + "px"}).show();
                     }
@@ -401,14 +535,14 @@ jQuery(function($){
                     } 
                     catch (ex) {
                     };
-                                    }
+                }
                 else {
                     try {
                         eval("var text = text.replace(/(.*)(" + etext.toLowerCase() + ")(.*)/gi,'$1<em>$2</em>$3');");
                     } 
                     catch (ex) {
                     };
-                                    }
+                }
                 return text;
             }
             
@@ -435,7 +569,7 @@ jQuery(function($){
             }
             
             function bindEvents(){
-                var maininput = $("#" + elemid + "_annoninput").children(".maininput");
+                var maininput = li_annon.children(".maininput");
                 bindFeedEvent();
                 feed.children("li").unbind("mousedown");
                 feed.children("li").mousedown(function(){
@@ -461,28 +595,28 @@ jQuery(function($){
                     	(event.keyCode == 9 && options.chooseOnTab) || 
                     	(event.keyCode == 188 && options.chooseOnComma)) {
                     	if (checkFocusOn()) {
-							var option = focuson;
-							addItem(option.text(), option.attr("rel"));
-							complete.hide();
-							event.preventDefault();
-							focuson = null;
-							if (options.keepPromptAfterChoose) {
-								holder.trigger("click");
-							}
-							return false;
-						} else {
-							if (options.newel) {
-								var value = xssPrevent($(this).val());
-								addItem(value, value);
-								complete.hide();
-								event.preventDefault();
-								focuson = null;
-							}
-							if (options.keepPromptAfterChoose) {
-								holder.trigger("click");
-							}
-							return false;
-						}
+                            var option = focuson;
+                            addItem(option.text(), option.attr("rel"));
+                            complete.hide();
+                            event.preventDefault();
+                            focuson = null;
+                            if (options.keepPromptAfterChoose) {
+                                holder.trigger("click");
+                            }
+                            return false;
+                        } else {
+                            if (options.newel) {
+                                var value = xssPrevent($(this).val());
+                                addItem(value, value);
+                                complete.hide();
+                                event.preventDefault();
+                                focuson = null;
+                            }
+                            if (options.keepPromptAfterChoose) {
+                                holder.trigger("click");
+                            }
+                            return false;
+                        }
                     }
                     
                     if (event.keyCode == 40) {
@@ -592,17 +726,21 @@ jQuery(function($){
                 filter_case: false,
                 filter_hide: false,
                 complete_text: "Start to type...",
+                default_search : '.*?',
                 maxshownitems: 30,
+                preset_update:true,
                 maxitems: 10,
+                data: false,
+                connect_with:false,
                 onselect: "",
                 onremove: "",
-				delay: 350,
-				forceWidth: null,
-				autoWidth: true,
-				chooseOnComma: true,
-				chooseOnTab: true,
-				chooseOnEnter: true,
-				keepPromptAfterChoose: true
+                delay:10,
+                forceWidth: null,
+                autoWidth: true,
+                chooseOnComma: true,
+                chooseOnTab: true,
+                chooseOnEnter: true,
+                keepPromptAfterChoose: true
             }, opt);
             
             //system variables
@@ -617,9 +755,12 @@ jQuery(function($){
             var deleting = 0;
             var browser_msie = "\v" == "v";
             var browser_msie_frame;
-            
             var element = $(this);
             var elemid = element.attr("id");
+            var li_annon = null;
+            var input = null;
+            var elm_selected = new Array();
+            elemid = (elemid != '' && elemid !=null)?elemid:'fcbkselect_'+ Math.floor(Math.random() * 100000);
             init();
             
             return this;
