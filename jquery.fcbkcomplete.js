@@ -64,6 +64,8 @@
  * onremove			- fire event on item remove
  * maxitimes		- maximum items that can be added
  * delay			- delay between ajax request (bigger delay, lower server time request)
+ * default_search                             - For a default search seacrh string. '.*?' is used to show all by default
+ * preset_update                              - to make converted selects skip selected items
  */
 jQuery(function($){
     $.fn.fcbkcomplete = function(opt){
@@ -73,6 +75,7 @@ jQuery(function($){
                 preSet();
                 fcbkPosition();
                 addInput(0);
+                moveToTop(complete.parent());
             }
 
             function fcbkPosition(){
@@ -131,6 +134,23 @@ jQuery(function($){
                 feed.css({
                     position:'absolute',
                     width:complete.width()
+                });
+            }
+
+            function moveToTop(id){
+                var max_index = 0;
+                var elm = $(id);
+
+                $('div').each(function(){
+                    var temp_index = parseInt($(this).css("z-index"));
+
+                    if(elm [0] != this && temp_index > max_index){
+                        max_index = temp_index;
+                    }
+                });
+
+                elm.css({
+                    'z-index':(max_index + 1)
                 });
             }
             
@@ -195,7 +215,7 @@ jQuery(function($){
                 });
                 
                 if (!preadded) {
-                    $("#" + elemid + "_annoninput").remove();
+                    li_annon.remove();
                     var _item;
                     addInput(focusme);
                     if (element.children("option[value=" + value + "]").length) {
@@ -263,6 +283,7 @@ jQuery(function($){
                 
                 holder.click(function(){
                     input.focus();
+                    fcbkPosition();
                     if (feed.length && (input.val().length || options.default_search.length)) {
                         if(options.default_search.length){
                             input.focus();
@@ -344,7 +365,7 @@ jQuery(function($){
                             if(options.preset_update){
                                 data = new Array();
                                 element.children("option").each(function(i, option){
-                                    option = $(option); 
+                                    option = $(option);
                                     if(option.is(':selected') || option.is('.selected')){
                                         return undefined;
                                     }
@@ -359,6 +380,7 @@ jQuery(function($){
                             addMembers(etext, data);
                             bindEvents();
                         }
+                        fcbkPosition();
                         complete.children(".default").hide();
                         feed.show();
                     }
@@ -366,6 +388,7 @@ jQuery(function($){
                 if (focusme) {
                     setTimeout(function(){
                         input.focus();
+                        fcbkPosition();
                         complete.children(".default").show();
                     }, 1);
                 }
@@ -667,10 +690,9 @@ jQuery(function($){
             var browser_msie_frame;
             var element = $(this);
             var elemid = element.attr("id");
-            var zindex = 1;
             var li_annon = null;
             var input = null;
-            elemid = (elemid != '' && elemid !=null)?elemid:'some_id' + '_' + Math.floor(Math.random() * 10000);
+            elemid = (elemid != '' && elemid !=null)?elemid:'fcbkselect_'+ Math.floor(Math.random() * 100000);
             init();
             
             return this;
