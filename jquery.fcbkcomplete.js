@@ -64,7 +64,7 @@
  * onremove			- fire event on item remove
  * maxitimes		- maximum items that can be added
  * delay			- delay between ajax request (bigger delay, lower server time request)
- * default_search                             - For a default search seacrh string. '.*?' is used to show all by default
+ * default_search                              - For a default search seacrh string. '.*?' is used to show all by default
  * preset_update                              - to make converted selects skip selected items
  */
 jQuery(function($){
@@ -397,14 +397,16 @@ jQuery(function($){
             function addMembers(etext, data){
                 feed.html('');
                 etext = etext == ''?options.default_search:etext;
-                
+
                 if (!options.cache && data != null) {
                     cache = new Array();
                     search_string = "";
                 }
                 
-                addTextItem(etext);
-                
+                if(options.default_search != etext){
+                    addTextItem(etext);
+                }
+
                 if (data != null && data.length) {
                     $.each(data, function(i, val){
                         cache.push({
@@ -433,10 +435,12 @@ jQuery(function($){
                 while (match != null && maximum > 0) {
                     var id = match[1];
                     var object = cache[id];
-                    if (options.filter_selected && element.children("option[value=" + object.value + "]").hasClass("selected")) {
-                    //nothing here...
+                    var elm = element.children("option[value=" + object.value + "]");
+                    if(elm.length == 0){
+                        elm = element.children(":contains('" + object.value + "')");
                     }
-                    else{
+                    var elm_selected = (elm.length > 0 && options.filter_selected && (elm.is(".selected") || elm.is(":selected")));
+                    if(!elm_selected){
                         content += '<li rel="' + object.value + '">' + itemIllumination(object.caption, etext) + '</li>';
                         counter++;
                         maximum--;
@@ -444,9 +448,6 @@ jQuery(function($){
                     match = myregexp.exec(search_string);
                 }
                 feed.append(content);
-                if(etext == options.default_search){
-                    feed.find('li:contains("' + etext + '")').remove();
-                }
                 
                 if (options.firstselected) {
                     focuson = feed.children("li:visible:first");
