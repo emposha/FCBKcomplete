@@ -713,7 +713,7 @@ jQuery(function($){
                 connect_with:false,
                 onselect: "",
                 onremove: "",
-                delay: 350
+                delay: 10
             }, opt);
             
             //system variables
