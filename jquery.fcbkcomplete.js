@@ -73,6 +73,12 @@
  * used_vals                                    - for connected select elements that have a pre-selected values, this is used to filter out selected elements
  * connect_with                               - other autocompletes to connect the selected autocomplete with, for linked selects initialized together, using the 'Array' is recommended
  *                                                     so as to use less memory. Not like there will be much memory used up to begin with.
+ * forceWidth                                  - Uses the width provided for the combo
+ * autoWidth                                   - Calculates width automatically for the combo
+ * chooseOnComma                        - Makes a selection when the comma button is hit 
+ * chooseOnTab                              - Makes a selection when the tab is hit 
+ *  chooseOnEnter                           - Makes a selection when the enter is hit 
+ * keepPromptAfterChoose               - keeps the combo box open even after selection
  */
 jQuery(function($){
     $.fn.fcbkcomplete = function(opt){
@@ -147,7 +153,7 @@ jQuery(function($){
                 complete.prepend(feed);
                 holder.after(complete);
                 feed.css({
-                    position:'absolute',
+                    position:'absolute'
                 });
                 if (options.forceWidth) {
                     feed.css("width", options.width);
