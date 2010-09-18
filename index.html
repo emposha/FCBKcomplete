@@ -42,7 +42,6 @@
         $(document).ready(function() 
         {        
           //$("#select1").fcbkcomplete();
-          
           $("#select2, #select1").fcbkcomplete({
             json_url: "data.txt",
             cache: true,
@@ -50,8 +49,8 @@
             filter_hide: true,
             connect_with:'Array',
             firstselected: true,
-            //onremove: "testme",
-            //onselect: "testme",
+            onremove: function(val){ console.log([this, {'val':val}, 'remove'])},
+            onselect: function(val){ console.log([this, {'val':val}, 'select'])},
             filter_selected: true,
             maxitems: 5,
             newel: true        

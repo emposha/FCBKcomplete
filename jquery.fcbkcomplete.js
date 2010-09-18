@@ -47,9 +47,9 @@
 		preSet also check if item have "selected" attribute
 		addItem minor fix
 		
-- 2.7.5 added options "chooseOnEnter,chooseOnTab,chooseOnComma" to control what keys trigger selection
-		added option "keepPromptAfterChoose" to control if we stay selected/focused after choosing an option
-		added options "forceWidth" and "autoWidth" to control width setting (if both are null || false, no width is set in JS) 
+- 2.7.5 added options "choose_on_enter,choose_on_tab,choose_on_comma" to control what keys trigger selection
+		added option "keep_prompt_after_choose" to control if we stay selected/focused after choosing an option
+		added options "force_width" and "auto_width" to control width setting (if both are null || false, no width is set in JS) 
 		
  */
 /* Coded by: emposha <admin@emposha.com> */
@@ -64,8 +64,9 @@
  * filter_selected  - filter selected items from list
  * complete_text    - text for complete page
  * maxshownitems	- maximum numbers that will be shown at dropdown list (less better performance)
- * onselect			- fire event on item select
- * onremove			- fire event on item remove
+ * onselect			- fire event on item remove, expects function(data){}, data is a javascript object with the attributes _value, _selected, _class.
+ *                                                      this within the function is the select element in question.
+ * onremove			- same as select but data lacks the _selected property
  * maxitimes		- maximum items that can be added
  * delay			- delay between ajax request (bigger delay, lower server time request)
  * default_search                              - For a default search seacrh string. '.*?' is used to show all by default
@@ -73,12 +74,12 @@
  * used_vals                                    - for connected select elements that have a pre-selected values, this is used to filter out selected elements
  * connect_with                               - other autocompletes to connect the selected autocomplete with, for linked selects initialized together, using the 'Array' is recommended
  *                                                     so as to use less memory. Not like there will be much memory used up to begin with.
- * forceWidth                                  - Uses the width provided for the combo
- * autoWidth                                   - Calculates width automatically for the combo
- * chooseOnComma                        - Makes a selection when the comma button is hit 
- * chooseOnTab                              - Makes a selection when the tab is hit 
- *  chooseOnEnter                           - Makes a selection when the enter is hit 
- * keepPromptAfterChoose               - keeps the combo box open even after selection
+ * force_width                                  - Uses the width provided for the combo
+ * auto_width                                   - Calculates width automatically for the combo
+ * choose_on_comma                      - Makes a selection when the comma button is hit 
+ * choose_on_tab                             - Makes a selection when the tab is hit 
+ * choose_on_enter                          - Makes a selection when the enter is hit 
+ * keep_prompt_after_choose               - keeps the combo box open even after selection
  */
 jQuery(function($){
     $.fn.fcbkcomplete = function(opt){
@@ -91,6 +92,7 @@ jQuery(function($){
                 fcbkPosition();
                 addInput(0);
                 moveToTop(complete.parent());
+                moveToTop(feed);
                 element.data('setSelected', function(val, disable){
                     var pos = $.inArray(val, elm_selected);
                     if(disable && pos < 0){
@@ -155,33 +157,32 @@ jQuery(function($){
                 feed.css({
                     position:'absolute'
                 });
-                if (options.forceWidth) {
+                if (options.force_width) {
                     feed.css("width", options.width);
-                } else if (options.autoWidth) {
+                } else if (options.auto_width) {
                     feed.css("width", complete.width());
                 } 
             }
 
             function moveToTop(id){
-                var max_index = 0;
-                var elm = $(id);
+                var sel = $(options.layer_selector);
 
-                $('div').each(function(){
-                    var temp_index = parseInt($(this).css("z-index"));
+                if(sel != null && sel.length > 0){
+                    var max_index = 0;
+                    var elm = $(id);
 
-                    if(elm [0] != this && temp_index > max_index){
-                        max_index = temp_index;
-                    }
-                });
+                    $(options.layer_selector).each(function(){
+                        var temp_index = parseInt($(this).css("z-index"));
 
-                elm.css({
-                    'z-index':(max_index + 1)
-                });                
-                if (options.forceWidth) {
-                    feed.css("width", options.width);
-                } else if (options.autoWidth) {
-                    feed.css("width", complete.width());
-                } 
+                        if(elm [0] != this && temp_index > max_index){
+                            max_index = temp_index;
+                        }
+                    });
+
+                    elm.css({
+                        'z-index':(max_index + 1)
+                    });
+                }
             }
             
             function preSet(){
@@ -336,7 +337,6 @@ jQuery(function($){
                             input.focus();
                             input.keyup();
                         }
-                        moveToTop(feed)
                         feed.show();
                     }
                     else {
@@ -430,7 +430,6 @@ jQuery(function($){
                         }
                         fcbkPosition();
                         complete.children(".default").hide();
-                        moveToTop(feed)
                         feed.show();
                     }
                 });
@@ -519,27 +518,27 @@ jQuery(function($){
                         "overflow": "auto"
                     });
                     if (browser_msie) {
-                        if (options.autoWidth) {
+                        if (options.auto_width) {
                             browser_msie_frame.css({
                                 "width": feed.width() + "px"
-                                });
+                            });
                         }
                         browser_msie_frame.css({
                             "height": (options.height * 24) + "px"
-                            }).show();
+                        }).show();
                     }
                 }
                 else {
                     feed.css("height", "auto");
                     if (browser_msie) {
-                        if (options.autoWidth) {
+                        if (options.auto_width) {
                             browser_msie_frame.css({
                                 "width": feed.width() + "px"
-                                });
+                            });
                         }
                         browser_msie_frame.css({
                             "height": feed.height() + "px"
-                            }).show();
+                        }).show();
                     }
                 }
             }
@@ -607,16 +606,16 @@ jQuery(function($){
                         holder.children("li.bit-box.deleted").removeClass("deleted");
                     }
                     /* Triggers an "submit" event */
-                    if ((event.keyCode == 13 && options.chooseOnEnter) || 
-                        (event.keyCode == 9 && options.chooseOnTab) || 
-                        (event.keyCode == 188 && options.chooseOnComma)) {
+                    if ((event.keyCode == 13 && options.choose_on_enter) || 
+                        (event.keyCode == 9 && options.choose_on_tab) || 
+                        (event.keyCode == 188 && options.choose_on_comma)) {
                         if (checkFocusOn()) {
                             var option = focuson;
                             addItem(option.text(), option.attr("rel"));
                             complete.hide();
                             event.preventDefault();
                             focuson = null;
-                            if (options.keepPromptAfterChoose) {
+                            if (options.keep_prompt_after_choose) {
                                 holder.trigger("click");
                             }
                             return false;
@@ -628,7 +627,7 @@ jQuery(function($){
                                 event.preventDefault();
                                 focuson = null;
                             }
-                            if (options.keepPromptAfterChoose) {
+                            if (options.keep_prompt_after_choose) {
                                 holder.trigger("click");
                             }
                             return false;
@@ -705,14 +704,13 @@ jQuery(function($){
             }
             
             function funCall(func, item){
-                var _object = "";
-                for (i = 0; i < item.get(0).attributes.length; i++) {
+                var _object = {};
+                for (var i = 0; i < item.get(0).attributes.length; i++) {
                     if (item.get(0).attributes[i].nodeValue != null) {
-                        _object += "\"_" + item.get(0).attributes[i].nodeName + "\": \"" + item.get(0).attributes[i].nodeValue + "\",";
+                        _object['_' + item.get(0).attributes[i].nodeName] =  item.get(0).attributes[i].nodeValue;
                     }
                 }
-                _object = "{" + _object + " notinuse: 0}";
-                func.call(func, _object);
+                func.call(element[0], _object);
             }
             
             function checkFocusOn(){
@@ -752,14 +750,15 @@ jQuery(function($){
                 onremove:"",
                 delay:10,
                 used_vals:new Array(),
-                forceWidth:null,
-                autoWidth:true,
-                chooseOnComma:true,
-                chooseOnTab:true,
-                chooseOnEnter:true,
-                keepPromptAfterChoose:true
+                force_width:null,
+                auto_width:true,
+                choose_on_comma:true,
+                choose_on_tab:true,
+                choose_on_enter:true,
+                keep_prompt_after_choose:true,
+                layer_selector:'div, table, ul, ol'
             }, opt);
-            
+
             //system variables
             var holder = null;
             var feed = null;

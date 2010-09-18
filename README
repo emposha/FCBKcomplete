@@ -47,9 +47,9 @@
 		preSet also check if item have "selected" attribute
 		addItem minor fix
 		
-- 2.7.5 added options "chooseOnEnter,chooseOnTab,chooseOnComma" to control what keys trigger selection
-		added option "keepPromptAfterChoose" to control if we stay selected/focused after choosing an option
-		added options "forceWidth" and "autoWidth" to control width setting (if both are null || false, no width is set in JS) 
+- 2.7.5 added options "choose_on_enter,choose_on_tab,choose_on_comma" to control what keys trigger selection
+		added option "keep_prompt_after_choose" to control if we stay selected/focused after choosing an option
+		added options "force_width" and "auto_width" to control width setting (if both are null || false, no width is set in JS) 
 		
  */
 /* Coded by: emposha <admin@emposha.com> */
@@ -64,8 +64,9 @@
  * filter_selected  - filter selected items from list
  * complete_text    - text for complete page
  * maxshownitems	- maximum numbers that will be shown at dropdown list (less better performance)
- * onselect			- fire event on item select
- * onremove			- fire event on item remove
+ * onselect			- fire event on item remove, expects function(data){}, data is a javascript object with the attributes _value, _selected, _class.
+ *                                                      this within the function is the select element in question.
+ * onremove			- same as select but data lacks the _selected property
  * maxitimes		- maximum items that can be added
  * delay			- delay between ajax request (bigger delay, lower server time request)
  * default_search                              - For a default search seacrh string. '.*?' is used to show all by default
@@ -73,10 +74,10 @@
  * used_vals                                    - for connected select elements that have a pre-selected values, this is used to filter out selected elements
  * connect_with                               - other autocompletes to connect the selected autocomplete with, for linked selects initialized together, using the 'Array' is recommended
  *                                                     so as to use less memory. Not like there will be much memory used up to begin with.
- * forceWidth                                  - Uses the width provided for the combo
- * autoWidth                                   - Calculates width automatically for the combo
- * chooseOnComma                        - Makes a selection when the comma button is hit 
- * chooseOnTab                              - Makes a selection when the tab is hit 
- *  chooseOnEnter                           - Makes a selection when the enter is hit 
- * keepPromptAfterChoose               - keeps the combo box open even after selection
+ * force_width                                  - Uses the width provided for the combo
+ * auto_width                                   - Calculates width automatically for the combo
+ * choose_on_comma                      - Makes a selection when the comma button is hit 
+ * choose_on_tab                             - Makes a selection when the tab is hit 
+ * choose_on_enter                          - Makes a selection when the enter is hit 
+ * keep_prompt_after_choose               - keeps the combo box open even after selection
  */
