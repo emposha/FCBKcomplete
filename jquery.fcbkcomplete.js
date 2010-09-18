@@ -71,7 +71,37 @@ jQuery(function($){
             function init(){
                 createFCBK();
                 preSet();
+                fcbkPosition();
                 addInput(0);
+            }
+
+            function fcbkPosition(){
+                setTimeout(function(){
+                    var prev = complete.prev();
+                    var offset = prev.position();
+
+                    complete.css({
+                        top:(offset.top + prev.outerHeight(true)),
+                        position:'absolute',
+                        left:offset.left
+                    });
+                }, 0);
+            }
+
+            function setSelecton(val, disable){
+                if(options.group){
+                    $(options.group).each(function(){
+                        var sel = $(this)
+
+                        if(sel.is('select') && sel[0] != element){
+                            var option = sel.find('option[value="'+ val +'"]');
+                            if(options.length == 0){
+                                option = sel.find(':contains("' + val + '")');
+                            }
+                            option.data('disabled', disable)
+                        }
+                    });
+                }
             }
             
             function createFCBK(){
@@ -96,29 +126,41 @@ jQuery(function($){
                 
                 feed = $(document.createElement("ul"));
                 feed.attr("id", elemid + "_feed");
-                
                 complete.prepend(feed);
                 holder.after(complete);
-                feed.css("width", complete.width());
+                feed.css({
+                    position:'absolute',
+                    width:complete.width()
+                });
             }
             
             function preSet(){
-                element.children("option").each(function(i, option){
-                    option = $(option);
-                    if (option.hasClass("selected") || option.is(':selected')) {
-                        addItem(option.text(), option.val(), true, option.hasClass("locked"));
-                        option.attr("selected", "selected");
-                    }
-                    else {
-                        option.removeAttr("selected");
-                    }
-                    
-                    cache.push({
-                        caption: option.text(),
-                        value: option.val()
+                if(options.data && $.isArray(options.data)){
+                    $.each(options.data, function(index, value){
+                        cache.push({
+                            caption: value.name,
+                            value: value.id
+                        });
                     });
-                    search_string += "" + (cache.length - 1) + ":" + option.text() + ";";
-                });
+                }
+                else{
+                    element.children("option").each(function(i, option){
+                        option = $(option);
+                        if (option.hasClass("selected") || option.is(':selected')) {
+                            addItem(option.text(), option.val(), true, option.hasClass("locked"));
+                            option.attr("selected", "selected");
+                        }
+                        else {
+                            option.removeAttr("selected");
+                        }
+                    
+                        cache.push({
+                            caption: option.text(),
+                            value: option.val()
+                        });
+                        search_string += "" + (cache.length - 1) + ":" + option.text() + ";";
+                    });
+                }
             }
             
             //public method to add new item
@@ -170,10 +212,10 @@ jQuery(function($){
                         _item.text(title);
                         element.append(_item);
                     }
-                    if (options.onselect.length) {
+                    if (typeof options.onselect == 'function') {
                         funCall(options.onselect, _item)
                     }
-					element.change();
+                    element.change();
                 }
                 holder.children("li.bit-box.deleted").removeClass("deleted");
                 feed.hide();
@@ -183,20 +225,21 @@ jQuery(function($){
             function removeItem(item){
                 if (!item.hasClass('locked')) {
                     item.fadeOut("fast");
-                    if (options.onremove.length) {
+                    if (typeof options.onremove == 'function') {
                         var _item = element.children("option[value=" + item.attr("rel") + "]");
                         funCall(options.onremove, _item)
                     }
                     element.children('option[value="' + item.attr("rel") + '"]').removeAttr("selected").removeClass("selected");
                     item.remove();
-					element.change();
+                    element.change();
                     deleting = 0;
                 }
             }
             
             function addInput(focusme){
-                var li = $(document.createElement("li"));
-                var input = $(document.createElement("input"));
+                li_annon = $(document.createElement("li"));
+                var li = li_annon;
+                input = $(document.createElement("input"));
                 var getBoxTimeout = 0;
 				
                 li.attr({
@@ -220,7 +263,11 @@ jQuery(function($){
                 
                 holder.click(function(){
                     input.focus();
-                    if (feed.length && input.val().length) {
+                    if (feed.length && (input.val().length || options.default_search.length)) {
+                        if(options.default_search.length){
+                            input.focus();
+                            input.keyup();
+                        }
                         feed.show();
                     }
                     else {
@@ -247,7 +294,8 @@ jQuery(function($){
                 });
                 
                 input.keyup(function(event){
-                    var etext = xssPrevent(input.val());
+                    var inp_val = input.val();
+                    var etext = xssPrevent(inp_val == ''?options.default_search:inp_val);
                     
                     if (event.keyCode == 8 && etext.length == 0) {
                         feed.hide();
@@ -289,10 +337,26 @@ jQuery(function($){
                                         bindEvents();
                                     });
                                 }, options.delay);                            
-							}
+                            }
                         }
                         else {
-                            addMembers(etext);
+                            var data = undefined
+                            if(options.preset_update){
+                                data = new Array();
+                                element.children("option").each(function(i, option){
+                                    option = $(option);
+                                    if(option.is(':selected') || option.is('.selected')){
+                                        return undefined;
+                                    }
+
+                                    data.push({
+                                        caption: option.text(),
+                                        value: option.val()
+                                    });
+                                });
+                            }
+
+                            addMembers(etext, data);
                             bindEvents();
                         }
                         complete.children(".default").hide();
@@ -309,6 +373,7 @@ jQuery(function($){
             
             function addMembers(etext, data){
                 feed.html('');
+                etext = etext == ''?options.default_search:etext;
                 
                 if (!options.cache && data != null) {
                     cache = new Array();
@@ -346,9 +411,9 @@ jQuery(function($){
                     var id = match[1];
                     var object = cache[id];
                     if (options.filter_selected && element.children("option[value=" + object.value + "]").hasClass("selected")) {
-                        //nothing here...
+                    //nothing here...
                     }
-                    else {
+                    else{
                         content += '<li rel="' + object.value + '">' + itemIllumination(object.caption, etext) + '</li>';
                         counter++;
                         maximum--;
@@ -356,6 +421,9 @@ jQuery(function($){
                     match = myregexp.exec(search_string);
                 }
                 feed.append(content);
+                if(etext == options.default_search){
+                    feed.find('li:contains("' + etext + '")').remove();
+                }
                 
                 if (options.firstselected) {
                     focuson = feed.children("li:visible:first");
@@ -392,14 +460,14 @@ jQuery(function($){
                     } 
                     catch (ex) {
                     };
-                                    }
+                }
                 else {
                     try {
                         eval("var text = text.replace(/(.*)(" + etext.toLowerCase() + ")(.*)/gi,'$1<em>$2</em>$3');");
                     } 
                     catch (ex) {
                     };
-                                    }
+                }
                 return text;
             }
             
@@ -426,7 +494,7 @@ jQuery(function($){
             }
             
             function bindEvents(){
-                var maininput = $("#" + elemid + "_annoninput").children(".maininput");
+                var maininput = li_annon.children(".maininput");
                 bindFeedEvent();
                 feed.children("li").unbind("mousedown");
                 feed.children("li").mousedown(function(){
@@ -575,11 +643,14 @@ jQuery(function($){
                 filter_case: false,
                 filter_hide: false,
                 complete_text: "Start to type...",
+                default_search : '.*?',
                 maxshownitems: 30,
+                preset_update:true,
                 maxitems: 10,
+                data: false,
                 onselect: "",
                 onremove: "",
-				delay: 350
+                delay: 350
             }, opt);
             
             //system variables
@@ -594,9 +665,12 @@ jQuery(function($){
             var deleting = 0;
             var browser_msie = "\v" == "v";
             var browser_msie_frame;
-            
             var element = $(this);
             var elemid = element.attr("id");
+            var zindex = 1;
+            var li_annon = null;
+            var input = null;
+            elemid = (elemid != '' && elemid !=null)?elemid:'some_id' + '_' + Math.floor(Math.random() * 10000);
             init();
             
             return this;
