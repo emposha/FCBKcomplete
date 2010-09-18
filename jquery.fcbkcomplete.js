@@ -344,7 +344,7 @@ jQuery(function($){
                             if(options.preset_update){
                                 data = new Array();
                                 element.children("option").each(function(i, option){
-                                    option = $(option);
+                                    option = $(option); 
                                     if(option.is(':selected') || option.is('.selected')){
                                         return undefined;
                                     }
