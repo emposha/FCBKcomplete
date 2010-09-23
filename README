@@ -79,5 +79,6 @@
  * choose_on_comma                      - Makes a selection when the comma button is hit 
  * choose_on_tab                             - Makes a selection when the tab is hit 
  * choose_on_enter                          - Makes a selection when the enter is hit 
- * keep_prompt_after_choose               - keeps the combo box open even after selection
+ * keep_prompt_after_choose            - keeps the combo box open even after selection
+ * zIndex                                         - The z-index of the feed. 
  */

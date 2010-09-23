@@ -79,7 +79,8 @@
  * choose_on_comma                      - Makes a selection when the comma button is hit 
  * choose_on_tab                             - Makes a selection when the tab is hit 
  * choose_on_enter                          - Makes a selection when the enter is hit 
- * keep_prompt_after_choose               - keeps the combo box open even after selection
+ * keep_prompt_after_choose            - keeps the combo box open even after selection
+ * zIndex                                         - The z-index of the feed. 
  */
 jQuery(function($){
     $.fn.fcbkcomplete = function(opt){
@@ -91,8 +92,7 @@ jQuery(function($){
                 preSet();
                 fcbkPosition();
                 addInput(0);
-                moveToTop(complete.parent());
-                moveToTop(feed);
+                moveToTop();
                 element.data('setSelected', function(val, disable){
                     var pos = $.inArray(val, elm_selected);
                     if(disable && pos < 0){
@@ -112,6 +112,7 @@ jQuery(function($){
                     complete.css({
                         top:(offset.top + prev.outerHeight(true)),
                         position:'absolute',
+                        'z-index':options.zIndex,
                         left:offset.left
                     });
                 }, 0);
@@ -129,7 +130,7 @@ jQuery(function($){
                     });
                 }
             }
-            
+
             function createFCBK(){
                 element.hide();
                 element.attr("multiple", "multiple");
@@ -149,14 +150,11 @@ jQuery(function($){
                     complete.append('<iframe class="ie6fix" scrolling="no" frameborder="0"></iframe>');
                     browser_msie_frame = complete.children('.ie6fix');
                 }
-                
+
                 feed = $(document.createElement("ul"));
                 feed.attr("id", elemid + "_feed");
                 complete.prepend(feed);
                 holder.after(complete);
-                feed.css({
-                    position:'absolute'
-                });
                 if (options.force_width) {
                     feed.css("width", options.width);
                 } else if (options.auto_width) {
@@ -192,6 +190,7 @@ jQuery(function($){
                             caption: value.name,
                             value: value.id
                         });
+                        used_vals.push(value.id);
                     });
                 }
                 else{
@@ -200,6 +199,7 @@ jQuery(function($){
                         if(option.hasClass("selected") || option.is(':selected')) {
                             addItem(option.text(), option.val(), true, option.hasClass("locked"));
                             option.attr("selected", "selected");
+                            used_vals.push(option.val());
                         }
                         else {
                             option.removeAttr("selected");
@@ -306,21 +306,12 @@ jQuery(function($){
             }
             
             function addInput(focusme){
-                li_annon = $(document.createElement("li"));
+                li_annon = $('<li class="bit-input" id="' + elemid + '_annoninput"><input type="text" class="maininput" size=1 /></li>');
                 var li = li_annon;
-                input = $(document.createElement("input"));
+                input = li.children(':first');
                 var getBoxTimeout = 0;
 				
-                li.attr({
-                    "class": "bit-input",
-                    "id": elemid + "_annoninput"
-                });
-                input.attr({
-                    "type": "text",
-                    "class": "maininput",
-                    "size": "1"
-                });
-                holder.append(li.append(input));
+                holder.append(li);
                 
                 input.focus(function(){
                     complete.fadeIn("fast");
@@ -473,7 +464,7 @@ jQuery(function($){
 
                 var myregexp, match;
                 try {
-                    myregexp = eval('/(?:^|;)\\s*(\\d+)\\s*:[^;]*?' + etext + '[^;]*/g' + filter);
+                    myregexp = new RegExp('(?:^|;)\\s*(\\d+)\\s*:[^;]*?' + etext + '[^;]*' + filter, 'gi');
                     match = myregexp.exec(search_string);
                 }
                 catch (ex) {
@@ -508,7 +499,7 @@ jQuery(function($){
 
                 feed.append(content);
                 if (options.firstselected) {
-                    focuson = feed.children("li:visible:first");
+                    focuson = feed.children("li:first");
                     focuson.addClass("auto-focus");
                 }
                 
@@ -546,14 +537,14 @@ jQuery(function($){
             function itemIllumination(text, etext){
                 if (options.filter_case) {
                     try {
-                        eval("var text = text.replace(/(.*)(" + etext + ")(.*)/gi,'$1<em>$2</em>$3');");
+                        var text = text.replace(new RegExp('(.*)("' + etext + '")(.*)', 'gi'), '$1<em>$2</em>$3');;
                     } 
                     catch (ex) {
                     };
                 }
                 else {
                     try {
-                        eval("var text = text.replace(/(.*)(" + etext.toLowerCase() + ")(.*)/gi,'$1<em>$2</em>$3');");
+                        var text = text.replace(new RegExp('(.*)("' + etext.toLowerCase() + '")(.*)', 'gi'), '$1<em>$2</em>$3');;
                     } 
                     catch (ex) {
                     };
@@ -637,14 +628,14 @@ jQuery(function($){
                     if (event.keyCode == 40) {
                         removeFeedEvent();
                         if (focuson == null || focuson.length == 0) {
-                            focuson = feed.children("li:visible:first");
+                            focuson = feed.children("li:first");
                             feed.get(0).scrollTop = 0;
                         }
                         else {
                             focuson.removeClass("auto-focus");
-                            focuson = focuson.nextAll("li:visible:first");
-                            var prev = parseInt(focuson.prevAll("li:visible").length, 10);
-                            var next = parseInt(focuson.nextAll("li:visible").length, 10);
+                            focuson = focuson.next();
+                            var prev = parseInt(focuson.prevAll("li").length);
+                            var next = parseInt(focuson.nextAll("li").length);
                             if ((prev > Math.round(options.height / 2) || next <= Math.round(options.height / 2)) && typeof(focuson.get(0)) != "undefined") {
                                 feed.get(0).scrollTop = parseInt(focuson.get(0).scrollHeight, 10) * (prev - Math.round(options.height / 2));
                             }
@@ -655,16 +646,16 @@ jQuery(function($){
                     if (event.keyCode == 38) {
                         removeFeedEvent();
                         if (focuson == null || focuson.length == 0) {
-                            focuson = feed.children("li:visible:last");
-                            feed.get(0).scrollTop = parseInt(focuson.get(0).scrollHeight, 10) * (parseInt(feed.children("li:visible").length, 10) - Math.round(options.height / 2));
+                            focuson = feed.children("li:last");
+                            feed.get(0).scrollTop = parseInt(focuson.get(0).scrollHeight) * (parseInt(feed.children("li").length) - Math.round(options.height / 2));
                         }
                         else {
                             focuson.removeClass("auto-focus");
-                            focuson = focuson.prevAll("li:visible:first");
-                            var prev = parseInt(focuson.prevAll("li:visible").length, 10);
-                            var next = parseInt(focuson.nextAll("li:visible").length, 10);
+                            focuson = focuson.prev();
+                            var prev = parseInt(focuson.prevAll("li").length);
+                            var next = parseInt(focuson.nextAll("li").length);
                             if ((next > Math.round(options.height / 2) || prev <= Math.round(options.height / 2)) && typeof(focuson.get(0)) != "undefined") {
-                                feed.get(0).scrollTop = parseInt(focuson.get(0).scrollHeight, 10) * (prev - Math.round(options.height / 2));
+                                feed.get(0).scrollTop = parseInt(focuson.get(0).scrollHeight) * (prev - Math.round(options.height / 2));
                             }
                         }
                         feed.children("li").removeClass("auto-focus");
@@ -749,6 +740,7 @@ jQuery(function($){
                 onselect:"",
                 onremove:"",
                 delay:10,
+                zIndex:1,
                 used_vals:new Array(),
                 force_width:null,
                 auto_width:true,
@@ -756,7 +748,7 @@ jQuery(function($){
                 choose_on_tab:true,
                 choose_on_enter:true,
                 keep_prompt_after_choose:true,
-                layer_selector:'div, table, ul, ol'
+                layer_selector:''
             }, opt);
 
             //system variables
