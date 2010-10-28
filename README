@@ -45,6 +45,8 @@
 - 2.7.4 standart event change call added on addItem, removeItem
 		preSet also check if item have "selected" attribute
 		addItem minor fix
+
+- 2.7.5 update to onselect and onremove callbacks
  */
 /* Coded by: emposha <admin@emposha.com> */
 /* Copyright: Emposha.com <http://www.emposha.com/> - Distributed under MIT - Keep this message! */

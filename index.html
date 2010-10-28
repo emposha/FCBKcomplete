@@ -39,6 +39,11 @@
       <input type="submit" value="Send">     
     </form>  
     <script language="JavaScript">
+        function testme(item)
+        {	
+          console.log(item);
+        }    
+
         $(document).ready(function() 
         {        
           $("#select1").fcbkcomplete();
@@ -49,24 +54,14 @@
             filter_case: true,
             filter_hide: true,
 			firstselected: true,
-            //onremove: "testme",
-			//onselect: "testme",
+            onremove: testme,
+            onselect: testme,
             filter_selected: true,
 			maxitems: 5,
             newel: true        
           });		 
         });
 		
-		function testme(item)
-	  	{	if ($.browser.mozilla) 
-			{
-				console.log(item);
-			}
-			else
-			{
-				alert(item);
-			}		  	
-	  	}    
     </script>
   </body>  
 </html>

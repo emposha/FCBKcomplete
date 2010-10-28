@@ -1,5 +1,5 @@
 /*
- FCBKcomplete 2.7.4
+ FCBKcomplete 2.7.5
  - Jquery version required: 1.2.x, 1.3.x, 1.4.x
  
  Changelog:
@@ -47,6 +47,7 @@
 		preSet also check if item have "selected" attribute
 		addItem minor fix
 
+- 2.7.5 update to onselect and onremove callbacks
  */
 /* Coded by: emposha <admin@emposha.com> */
 /* Copyright: Emposha.com <http://www.emposha.com/> - Distributed under MIT - Keep this message! */
@@ -170,7 +171,7 @@ jQuery(function($){
                         _item.text(title);
                         element.append(_item);
                     }
-                    if (options.onselect.length) {
+                    if (options.onselect) {
                         funCall(options.onselect, _item)
                     }
 					element.change();
@@ -183,7 +184,7 @@ jQuery(function($){
             function removeItem(item){
                 if (!item.hasClass('locked')) {
                     item.fadeOut("fast");
-                    if (options.onremove.length) {
+                    if (options.onremove) {
                         var _item = element.children("option[value=" + item.attr("rel") + "]");
                         funCall(options.onremove, _item)
                     }
@@ -577,8 +578,8 @@ jQuery(function($){
                 complete_text: "Start to type...",
                 maxshownitems: 30,
                 maxitems: 10,
-                onselect: "",
-                onremove: "",
+                onselect: null,
+                onremove: null,
 				delay: 350
             }, opt);
             
