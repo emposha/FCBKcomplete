@@ -305,7 +305,7 @@ jQuery(function($) {
                         }
                     }
 
-                    if (event.keyCode != 40 && event.keyCode != 38 && etext.length != 0) {
+                    if (event.keyCode != 40 && event.keyCode != 38 && event.keyCode!=37 && event.keyCode!=39 && etext.length != 0) {
                         counter = 0;
 
                         if (options.json_url) {
