@@ -1,4 +1,4 @@
-/*
+/**
  FCBKcomplete 2.7.5
  - Jquery version required: 1.2.x, 1.3.x, 1.4.x
  
