@@ -318,7 +318,7 @@ jQuery(function($) {
                                 var getBoxTimeoutValue = getBoxTimeout;
                                 setTimeout(function() {
                                     if (getBoxTimeoutValue != getBoxTimeout) return;
-                                    $.getJSON(options.json_url + (options.json_url.indexOf("?") > -1 ? "&": "?") + "tag=" + etext, null,
+                                    $.getJSON(options.json_url, {tag: etext},
                                     function(data) {
                                         addMembers(etext, data);
                                         json_cache = true;
