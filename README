@@ -55,12 +55,12 @@
  */
 /* Coded by: emposha admin@emposha.com */
 /* Copyright: Emposha.com http://www.emposha.com - Distributed under MIT - Keep this message! */
-/*
+/* Copyright: Guillermo Rauch <http://devthought.com/> - Distributed under MIT - Keep this message! */
+/**
  * json_url         - url to fetch json object
  * cache            - use cache
  * height           - maximum number of element shown before scroll will apear
  * newel            - show typed text like a element
- * addontab         - add first show element on tab or enter hit
  * firstselected    - automaticly select first element from dropdown
  * filter_case      - case sensitive filter
  * filter_selected  - filter selected items from list
@@ -70,5 +70,6 @@
  * onremove         - fire event on item remove
  * maxitimes        - maximum items that can be added
  * delay            - delay between ajax request (bigger delay, lower server time request)
+ * addontab         - add first show element on tab or enter hit
  * attachto         - after this element fcbkcomplete insert own elements
  */
