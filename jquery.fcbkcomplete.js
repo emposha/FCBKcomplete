@@ -2,7 +2,7 @@
  FCBKcomplete 2.7.5
  - Jquery version required: 1.2.x, 1.3.x, 1.4.x
  
- Special thanks to Guillermo Rauch <http://devthought.com> for his contribution
+ Based on TextboxList by Guillermo Rauch http://devthought.com/
  
  Changelog:
  - 2.00 new version of fcbkcomplete
@@ -55,7 +55,7 @@
  */
 /* Coded by: emposha <admin@emposha.com> */
 /* Copyright: Emposha.com <http://www.emposha.com> - Distributed under MIT - Keep this message! */
-/* Copyright: Guillermo Rauch <http://devthought.com/> - Distributed under MIT - Keep this message! */
+
 /**
  * json_url         - url to fetch json object
  * cache            - use cache
