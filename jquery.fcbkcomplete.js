@@ -96,6 +96,7 @@
 
     $.fn.extend({
         fcbkcomplete: function (options) {
+            moveToTop(this);
             options = $.extend({}, $.FCBKCompleter.defaults, options);
 
             // If a 'options.class_names' dictionary was passed, still use defaults
@@ -153,7 +154,6 @@
         preSet();
         fcbkPosition();
         addInput(false);
-        moveToTop();
         element.data('setSelected', function(val, disable) {
             var pos = $.inArray(val, elm_selected);
             if (disable && pos < 0) {
