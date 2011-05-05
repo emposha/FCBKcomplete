@@ -4,7 +4,7 @@
         <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
         <title>FCBKcomplete Demo</title>
         <link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8" />
-        <script src="http://code.jquery.com/jquery-1.4.4.min.js" type="text/javascript" charset="utf-8">
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.6.min.js" type="text/javascript" charset="utf-8">
         </script>
         <script src="jquery.fcbkcomplete.js" type="text/javascript" charset="utf-8">
         </script>
@@ -15,9 +15,9 @@
         </div>
         <form action="submit.php" method="POST" accept-charset="utf-8">
             <select id="select3" name="select3">
-                <option value="test1">sleep</option>
-                <option value="test3">sport</option>
-                <option value="test3">freestyle</option>
+                <option value="sleep" class="selected">sleep</option>
+                <option value="sport">sport</option>
+                <option value="freestyle">freestyle</option>
             </select>
             <br/>
             <br/>
@@ -28,7 +28,9 @@
                 $("#select3").fcbkcomplete({
                     json_url: "data.txt",
                     addontab: true,                   
-                    height: 2                    
+                    maxitems: 2,
+                    height: 2,
+                    cache: true
                 });
             });
         </script>
