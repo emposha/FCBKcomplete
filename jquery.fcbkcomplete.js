@@ -108,7 +108,7 @@ jQuery(function($) {
                 complete = $(document.createElement("div"));
                 complete.addClass("facebook-auto");
                 complete.append('<div class="default">' + options.complete_text + "</div>");
-                complete.hover(function() {options.complete_hover = 0;}, function() {options.complete_hover = 1;});
+                complete.hover(function() {complete_hover = 0;}, function() {complete_hover = 1;});
                 
                 feed = $(document.createElement("ul"));
                 feed.attr("id", elemid + "_feed");
@@ -247,7 +247,7 @@ jQuery(function($) {
                 });
 
                 input.blur(function() {
-                    if (options.complete_hover) {
+                    if (complete_hover) {
                       complete.fadeOut("fast");
                     }
                     else {
