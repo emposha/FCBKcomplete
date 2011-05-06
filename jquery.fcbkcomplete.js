@@ -1,5 +1,5 @@
 /**
- FCBKcomplete 2.8.0
+ FCBKcomplete 2.8.1
  - Jquery version required: 1.6.x
 
 FCBKcomplete forks:
@@ -9,6 +9,10 @@ https://github.com/partoa/FCBKcomplete
  Based on TextboxList by Guillermo Rauch http://devthought.com/
 
  Changelog:
+
+ - 2.8.1
+ disabled rewriting of the select name (appending [])
+ fixed initialization of selected options
 
  - 2.8.0  bug fixes
  added jquery 1.6 support please note that old versions of jquery not supported
@@ -110,9 +114,10 @@ https://github.com/partoa/FCBKcomplete
 
       function elPrepare() {
         name = element.attr("name");
-        if (name.indexOf("[]") == -1) {
-          name = name + "[]";
-        }
+        // XXX DON'T CHANGE THE NAME!!!!
+//        if (name.indexOf("[]") == -1) {
+//          name = name + "[]";
+//        }
 
         var temp_elem = $('<'+element.get(0).tagName+' name="'+name+'" id="'+elemid+'" multiple="multiple" class="hidden">');
         $.each(element.children('option'), function(i, option) {
@@ -120,7 +125,7 @@ https://github.com/partoa/FCBKcomplete
           temp_elem.data(option.val(), option.text());
           if (option.hasClass("selected")) {
             addItem(option.text(), option.val(), true, option.hasClass("locked"));
-            temp_elem.append('<option value="'+option.val()+'">'+option.text()+'</option>')
+            temp_elem.append('<option value="'+option.val()+'" selected="selected" class="selected">'+option.text()+'</option>')
           }
         })
         element.after(temp_elem);
@@ -323,7 +328,7 @@ https://github.com/partoa/FCBKcomplete
         
         var content = '';
 
-        $.each(cache.search(etext), function (i, object) {
+        $.each(cache.search(new RegExp(etext, filter)), function (i, object) {
           if (options.filter_selected && element.children("option[value=" + object.key + "]").hasClass("selected")) {
             //nothing here...
           } else {
