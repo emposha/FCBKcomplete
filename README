@@ -1,5 +1,5 @@
 /**
- FCBKcomplete 2.8.0
+ FCBKcomplete 2.8.1
  - Jquery version required: 1.6.x
 
 FCBKcomplete forks:
@@ -9,6 +9,10 @@ https://github.com/partoa/FCBKcomplete
  Based on TextboxList by Guillermo Rauch http://devthought.com/
 
  Changelog:
+
+ - 2.8.1
+ disabled rewriting of the select name (appending [])
+ fixed initialization of selected optio
 
  - 2.8.0  bug fixes
  added jquery 1.6 support please note that old versions of jquery not supported
