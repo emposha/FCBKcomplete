@@ -10,6 +10,10 @@ https://github.com/partoa/FCBKcomplete
 
  Changelog:
 
+ - 2.8.1  some minor bug fixes
+  added selected attribute to preselected option thanks to @musketyr
+  fixed cache entry with space thanks to Matt
+
  - 2.8.0  bug fixes
  added jquery 1.6 support please note that old versions of jquery not supported
  cache mechanizm updated

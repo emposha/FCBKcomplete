@@ -9,7 +9,10 @@ https://github.com/partoa/FCBKcomplete
  Based on TextboxList by Guillermo Rauch http://devthought.com/
 
  Changelog:
-
+ - 2.8.1  some minor bug fixes
+  added selected attribute to preselected option thanks to @musketyr
+  fixed cache entry with space thanks to Matt
+  
  - 2.8.0  bug fixes
  added jquery 1.6 support please note that old versions of jquery not supported
  cache mechanizm updated
@@ -120,7 +123,7 @@ https://github.com/partoa/FCBKcomplete
           temp_elem.data(option.val(), option.text());
           if (option.hasClass("selected")) {
             addItem(option.text(), option.val(), true, option.hasClass("locked"));
-            temp_elem.append('<option value="'+option.val()+'">'+option.text()+'</option>')
+            temp_elem.append('<option value="'+option.val()+'" selected="selected" class="selected">'+option.text()+'</option>');
           }
         })
         element.after(temp_elem);
@@ -557,10 +560,10 @@ https://github.com/partoa/FCBKcomplete
       var json_cache = {};
       var json_cache_object = {
         'set': function (id, val) {
-          eval("json_cache."+xssPrevent(id)+" = val;");
+          eval("json_cache."+xssPrevent(id.replace(' ', '_'))+" = val;");
         },
         'get': function(id) {
-          return eval("json_cache."+xssPrevent(id));
+          return eval("json_cache."+xssPrevent(id.replace(' ', '_')));
         }
       }
       
