@@ -1,5 +1,5 @@
 /**
- FCBKcomplete 2.8.0
+ FCBKcomplete 2.8.2
  - Jquery version required: 1.6.x
 
 FCBKcomplete forks:
@@ -9,11 +9,13 @@ https://github.com/partoa/FCBKcomplete
  Based on TextboxList by Guillermo Rauch http://devthought.com/
 
  Changelog:
-
+ - 2.8.2  json_cache bug fix
+  new option added "bricket"
+ 
  - 2.8.1  some minor bug fixes
   added selected attribute to preselected option thanks to @musketyr
   fixed cache entry with space thanks to Matt
-
+  
  - 2.8.0  bug fixes
  added jquery 1.6 support please note that old versions of jquery not supported
  cache mechanizm updated
@@ -84,4 +86,5 @@ https://github.com/partoa/FCBKcomplete
  * delay            - delay between ajax request (bigger delay, lower server time request)
  * addontab         - add first visible element on tab or enter hit
  * attachto         - after this element fcbkcomplete insert own elements
+ * bricket          - use square bricket with select (needed for asp or php) enabled by default
  */

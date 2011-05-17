@@ -1,5 +1,5 @@
 /**
- FCBKcomplete 2.8.0
+ FCBKcomplete 2.8.2
  - Jquery version required: 1.6.x
 
 FCBKcomplete forks:
@@ -9,6 +9,9 @@ https://github.com/partoa/FCBKcomplete
  Based on TextboxList by Guillermo Rauch http://devthought.com/
 
  Changelog:
+ - 2.8.2  json_cache bug fix
+  new option added "bricket"
+ 
  - 2.8.1  some minor bug fixes
   added selected attribute to preselected option thanks to @musketyr
   fixed cache entry with space thanks to Matt
@@ -83,7 +86,9 @@ https://github.com/partoa/FCBKcomplete
  * delay            - delay between ajax request (bigger delay, lower server time request)
  * addontab         - add first visible element on tab or enter hit
  * attachto         - after this element fcbkcomplete insert own elements
+ * bricket          - use square bricket with select (needed for asp or php) enabled by default
  */
+
 (function( $, undefined ) {
   $.fn.fcbkcomplete = function(opt) {
     return this.queue( function() {
@@ -113,8 +118,10 @@ https://github.com/partoa/FCBKcomplete
 
       function elPrepare() {
         name = element.attr("name");
-        if (name.indexOf("[]") == -1) {
-          name = name + "[]";
+        if (options.bricket) {
+          if (name.indexOf("[]") == -1) {
+            name = name + "[]";
+          }
         }
 
         var temp_elem = $('<'+element.get(0).tagName+' name="'+name+'" id="'+elemid+'" multiple="multiple" class="hidden">');
@@ -548,7 +555,8 @@ https://github.com/partoa/FCBKcomplete
         onselect: null,
         onremove: null,
         attachto: null,
-        delay: 350
+        delay: 350,
+        bricket: true
       },
       opt);
 
@@ -557,15 +565,6 @@ https://github.com/partoa/FCBKcomplete
       var feed = null;
       var complete = null;
       var counter = 0;
-      var json_cache = {};
-      var json_cache_object = {
-        'set': function (id, val) {
-          eval("json_cache."+xssPrevent(id.replace(' ', '_'))+" = val;");
-        },
-        'get': function(id) {
-          return eval("json_cache."+xssPrevent(id.replace(' ', '_')));
-        }
-      }
       
       var focuson = null;
       var deleting = 0;
@@ -573,6 +572,17 @@ https://github.com/partoa/FCBKcomplete
 
       var element = $(this);
       var elemid = element.attr("id");
+      
+      var json_cache = $('<div></div>').after(element);
+      var json_cache_object = {
+        'set': function (id, val) {
+          json_cache.data(id, val);
+        },
+        'get': function(id) {
+          return json_cache.data(id);
+        }
+      }
+      
       var cache = {
         'search': function (text, callback) {
           var temp = new Array();
