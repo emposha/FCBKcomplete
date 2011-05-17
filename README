@@ -11,7 +11,8 @@ https://github.com/partoa/FCBKcomplete
  Changelog:
  - 2.8.2  json_cache bug fix
   new option added "bricket"
- 
+  newel bug fix thanks to Matt
+
  - 2.8.1  some minor bug fixes
   added selected attribute to preselected option thanks to @musketyr
   fixed cache entry with space thanks to Matt

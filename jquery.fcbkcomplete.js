@@ -11,6 +11,7 @@ https://github.com/partoa/FCBKcomplete
  Changelog:
  - 2.8.2  json_cache bug fix
   new option added "bricket"
+  newel bug fix thanks to Matt
  
  - 2.8.1  some minor bug fixes
   added selected attribute to preselected option thanks to @musketyr
@@ -173,16 +174,9 @@ https://github.com/partoa/FCBKcomplete
         });
         if (!preadded) {
           $("#" + elemid + "_annoninput").remove();
-          var _item;
           addInput(focusme);
-          if (element.children("option[value=" + value + "]").length) {
-            _item = element.children("option[value=" + value + "]");
-            _item.prop("selected", true);
-            _item.addClass("selected");
-          } else {
-            var _item = $('<option value="'+value+'" class="selected" selected="selected">'+title+'</option>').prop("selected", true);
-            element.append(_item);
-          }
+          var _item = $('<option value="'+value+'" class="selected" selected="selected">'+title+'</option>').prop("selected", true);
+          element.append(_item);
           if (options.onselect) {
             funCall(options.onselect, _item);
           }
