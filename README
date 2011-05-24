@@ -1,5 +1,5 @@
 /**
- FCBKcomplete 2.8.2
+ FCBKcomplete 2.8.3
  - Jquery version required: 1.6.x
 
 FCBKcomplete forks:
@@ -9,10 +9,13 @@ https://github.com/partoa/FCBKcomplete
  Based on TextboxList by Guillermo Rauch http://devthought.com/
 
  Changelog:
+  - 2.8.3  no more eval use
+  public function addItem and removeItem fix (thanks to Yaron)
+  
  - 2.8.2  json_cache bug fix
   new option added "bricket"
   newel bug fix thanks to Matt
-
+ 
  - 2.8.1  some minor bug fixes
   added selected attribute to preselected option thanks to @musketyr
   fixed cache entry with space thanks to Matt

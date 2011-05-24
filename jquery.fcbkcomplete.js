@@ -1,5 +1,5 @@
 /**
- FCBKcomplete 2.8.2
+ FCBKcomplete 2.8.3
  - Jquery version required: 1.6.x
 
 FCBKcomplete forks:
@@ -9,6 +9,9 @@ https://github.com/partoa/FCBKcomplete
  Based on TextboxList by Guillermo Rauch http://devthought.com/
 
  Changelog:
+  - 2.8.3  no more eval use
+  public function addItem and removeItem fix (thanks to Yaron)
+  
  - 2.8.2  json_cache bug fix
   new option added "bricket"
   newel bug fix thanks to Matt
@@ -137,19 +140,21 @@ https://github.com/partoa/FCBKcomplete
         element.after(temp_elem);
         element.remove();
         element = temp_elem;
+        
+        //public method to add new item
+        $(element).bind("addItem", function(event, data) {
+          addItem(data.title, data.value, 0, 0, 0);
+        });
+        
+        //public method to remove item
+        $(element).bind("removeItem", function(event, data) {
+          var item = holder.children('li[rel=' + data.value + ']');
+          if (item.length) {
+            removeItem(item);
+          }
+        });
       }
 
-      //public method to add new item
-      $(this).bind("addItem", function(event, data) {
-        addItem(data.title, data.value, 0, 0, 0);
-      });
-      //public method to remove item
-      $(this).bind("removeItem", function(event, data) {
-        var item = holder.children('li[rel=' + data.value + ']');
-        if (item.length) {
-          removeItem(item);
-        }
-      });
       //public method to remove item
       $(this).bind("destroy", function(event, data) {
         holder.remove();
@@ -360,12 +365,14 @@ https://github.com/partoa/FCBKcomplete
       function itemIllumination(text, etext) {
         if (options.filter_case) {
           try {
-            eval("var text = text.replace(/(.*)(" + etext + ")(.*)/gi,'$1<em>$2</em>$3');");
+            var regex = new RegExp("(.*)(" + etext + ")(.*)", "ig");
+            var text = text.replace(regex,'$1<em>$2</em>$3');
           } catch(ex) {
           };
         } else {
           try {
-            eval("var text = text.replace(/(.*)(" + etext.toLowerCase() + ")(.*)/gi,'$1<em>$2</em>$3');");
+            var regex = new RegExp("(.*)(" + etext.toLowerCase() + ")(.*)", "gi");
+            var text = text.replace(regex,'$1<em>$2</em>$3');
           } catch(ex) {
           };
         }
