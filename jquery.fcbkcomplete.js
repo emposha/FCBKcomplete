@@ -1,5 +1,5 @@
 /**
- FCBKcomplete 2.8.3
+ FCBKcomplete 2.8.4
  - Jquery version required: 1.6.x
 
 FCBKcomplete forks:
@@ -9,7 +9,9 @@ https://github.com/partoa/FCBKcomplete
  Based on TextboxList by Guillermo Rauch http://devthought.com/
 
  Changelog:
-  - 2.8.3  no more eval use
+  - 2.8.4 cache object fix by @tedberg
+  
+  - 2.8.3 no more eval use
   public function addItem and removeItem fix (thanks to Yaron)
   
  - 2.8.2  json_cache bug fix
@@ -588,8 +590,10 @@ https://github.com/partoa/FCBKcomplete
         'search': function (text, callback) {
           var temp = new Array();
           $.each(element.data(), function (i, _elem) {
-            if (_elem.search(text) != -1) {
-              temp.push({'key': i, 'value': _elem});
+            if (typeof _elem.search === 'function') {
+              if (_elem.search(text) != -1) {
+                temp.push({'key': i, 'value': _elem});
+              }
             }
           });
           return temp;

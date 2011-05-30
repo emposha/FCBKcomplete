@@ -1,5 +1,5 @@
 /**
- FCBKcomplete 2.8.3
+ FCBKcomplete 2.8.4
  - Jquery version required: 1.6.x
 
 FCBKcomplete forks:
@@ -9,7 +9,9 @@ https://github.com/partoa/FCBKcomplete
  Based on TextboxList by Guillermo Rauch http://devthought.com/
 
  Changelog:
-  - 2.8.3  no more eval use
+  - 2.8.4 cache object fix by @tedberg
+  
+  - 2.8.3 no more eval use
   public function addItem and removeItem fix (thanks to Yaron)
   
  - 2.8.2  json_cache bug fix
