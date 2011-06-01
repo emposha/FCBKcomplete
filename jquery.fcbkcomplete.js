@@ -1,80 +1,9 @@
 /**
- FCBKcomplete 2.8.4
+ FCBKcomplete 2.8.4 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  - Jquery version required: 1.6.x
+*/
 
-FCBKcomplete forks:
-https://github.com/partoa/FCBKcomplete
-
-
- Based on TextboxList by Guillermo Rauch http://devthought.com/
-
- Changelog:
-  - 2.8.4 cache object fix by @tedberg
-  
-  - 2.8.3 no more eval use
-  public function addItem and removeItem fix (thanks to Yaron)
-  
- - 2.8.2  json_cache bug fix
-  new option added "bricket"
-  newel bug fix thanks to Matt
- 
- - 2.8.1  some minor bug fixes
-  added selected attribute to preselected option thanks to @musketyr
-  fixed cache entry with space thanks to Matt
-  
- - 2.8.0  bug fixes
- added jquery 1.6 support please note that old versions of jquery not supported
- cache mechanizm updated
- 
- - 2.01 fixed bugs & added features
- fixed filter bug for preadded items
- focus on the input after selecting tag
- the element removed pressing backspace when the element is selected
- input tag in the control has a border in IE7
- added iterate over each match and apply the plugin separately
- set focus on the input after selecting tag
- 
- - 2.02 fixed fist element selected bug
- fixed defaultfilter error bug
- 
- - 2.5  removed selected="selected" attribute due ie bug
- element search algorithm changed
- better performance fix added
- fixed many small bugs
- onselect event added
- onremove event added
- 
- - 2.6  ie6/7 support fix added
- added new public method addItem due request
- added new options "firstselected" that you can set true/false to select first element on dropdown list
- autoexpand input element added
- removeItem bug fixed
- and many more bug fixed
- fixed public method to use it $("elem").trigger("addItem",[{"title": "test", "value": "test"}]);
- 
- - 2.7   jquery 1.4 compability
- item lock possability added by adding locked class to preadded option <option value="value" class="selected locked">text</option>
- maximum item that can be added
- 
- - 2.7.1 bug fixed
- ajax delay added thanks to http://github.com/dolorian
- 
- - 2.7.2 some minor bug fixed
- minified version recompacted due some problems
- 
- - 2.7.3 event call fixed thanks to William Parry <williamparry!at!gmail.com>
- 
- - 2.7.4 standart event change call added on addItem, removeItem
- preSet also check if item have "selected" attribute
- addItem minor fix
- 
- - 2.7.5  event call removeItem fixed
- new public method destroy added needed to remove fcbkcomplete element from dome
-  
-  - 2.00 new version of fcbkcomplete
- */
-/* Coded by: emposha <admin@emposha.com> */
-/* Copyright: Emposha.com <http://www.emposha.com> - Distributed under MIT - Keep this message! */
+/* Based on TextboxList by Guillermo Rauch http://devthought.com/ */
 
 /**
  * json_url         - url to fetch json object
