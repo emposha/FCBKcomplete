@@ -1,5 +1,5 @@
 
- FCBKcomplete 2.8.4 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ FCBKcomplete 2.8.5 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  - Jquery version required: 1.6.x
 
  FCBKcomplete forks: 
@@ -8,6 +8,9 @@
  Based on TextboxList by Guillermo Rauch http://devthought.com/
 
  Changelog:
+
+  - 2.8.5 cache object fix (case sensitive) by @ketwaroo
+
   - 2.8.4 cache object fix by @tedberg
   
   - 2.8.3 no more eval use

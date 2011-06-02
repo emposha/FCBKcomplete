@@ -1,5 +1,5 @@
 /**
- FCBKcomplete 2.8.4 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ FCBKcomplete 2.8.5 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  - Jquery version required: 1.6.x
 */
 
@@ -518,9 +518,10 @@
       var cache = {
         'search': function (text, callback) {
           var temp = new Array();
+          var regex = new RegExp(text, (options.filter_case ? "i": "ig"));
           $.each(element.data(), function (i, _elem) {
             if (typeof _elem.search === 'function') {
-              if (_elem.search(text) != -1) {
+              if (_elem.search(regex) != -1) {
                 temp.push({'key': i, 'value': _elem});
               }
             }
