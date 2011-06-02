@@ -1,11 +1,11 @@
 
 FCBKcomplete
 ============
-  FCBKcomplete is fancy facebook-like dynamic inputs with auto complete & pre added values.
+FCBKcomplete is fancy facebook-like dynamic inputs with auto complete & pre added values.
 
-  FCBKcomplete v2.8.5 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+FCBKcomplete v2.8.5 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
 
-  FCBKcomplete based on TextboxList by Guillermo Rauch http://devthought.com/
+FCBKcomplete based on TextboxList by Guillermo Rauch http://devthought.com/
 
 Requirements
 ------------
@@ -25,6 +25,26 @@ $("elem").trigger("addItem",[{"title": "test", "value": "test"}]);
 
 Trigger to remove element:
 $("elem").trigger("removeItem",[{"value": "test"}]);
+
+Options
+-------
+
+ * json_url         - url to fetch json object
+ * cache            - use cache
+ * height           - maximum number of element shown before scroll will apear
+ * newel            - show typed text like a element
+ * firstselected    - automaticly select first element from dropdown
+ * filter_case      - case sensitive filter
+ * filter_selected  - filter selected items from list
+ * complete_text    - text for complete page
+ * maxshownitems    - maximum numbers that will be shown at dropdown list (less better performance)
+ * onselect         - fire event on item select
+ * onremove         - fire event on item remove
+ * maxitimes        - maximum items that can be added
+ * delay            - delay between ajax request (bigger delay, lower server time request)
+ * addontab         - add first visible element on tab or enter hit
+ * attachto         - after this element fcbkcomplete insert own elements
+ * bricket          - use square bricket with select (needed for asp or php) enabled by default
 
 Changelog
 ---------
@@ -66,23 +86,3 @@ Changelog
  - 2.7   jquery 1.4 compability
  item lock possability added by adding locked class to preadded option <option value="value" class="selected locked">text</option>
  maximum item that can be added
-
-Options
--------
-
- * json_url         - url to fetch json object
- * cache            - use cache
- * height           - maximum number of element shown before scroll will apear
- * newel            - show typed text like a element
- * firstselected    - automaticly select first element from dropdown
- * filter_case      - case sensitive filter
- * filter_selected  - filter selected items from list
- * complete_text    - text for complete page
- * maxshownitems    - maximum numbers that will be shown at dropdown list (less better performance)
- * onselect         - fire event on item select
- * onremove         - fire event on item remove
- * maxitimes        - maximum items that can be added
- * delay            - delay between ajax request (bigger delay, lower server time request)
- * addontab         - add first visible element on tab or enter hit
- * attachto         - after this element fcbkcomplete insert own elements
- * bricket          - use square bricket with select (needed for asp or php) enabled by default
