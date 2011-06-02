@@ -1,13 +1,20 @@
 
- FCBKcomplete 2.8.5 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
- - Jquery version required: 1.6.x
+FCBKcomplete
+============
+  FCBKcomplete is fancy facebook-like dynamic inputs with auto complete & pre added values. 
+  FCBKcomplete v2.8.5 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+  FCBKcomplete based on TextboxList by Guillermo Rauch http://devthought.com/
 
- FCBKcomplete forks: 
+Requirements
+------------
+Jquery version required: 1.6.x
+
+FCBKcomplete forks
+------------------
   https://github.com/partoa/FCBKcomplete
 
- Based on TextboxList by Guillermo Rauch http://devthought.com/
-
- Changelog:
+Changelog
+---------
 
   - 2.8.5 cache object fix (case sensitive) by @ketwaroo
 
@@ -47,6 +54,8 @@
  item lock possability added by adding locked class to preadded option <option value="value" class="selected locked">text</option>
  maximum item that can be added
 
+Options
+-------
 
  * json_url         - url to fetch json object
  * cache            - use cache
