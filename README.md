@@ -1,8 +1,10 @@
 
 FCBKcomplete
 ============
-  FCBKcomplete is fancy facebook-like dynamic inputs with auto complete & pre added values. 
+  FCBKcomplete is fancy facebook-like dynamic inputs with auto complete & pre added values.
+
   FCBKcomplete v2.8.5 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+
   FCBKcomplete based on TextboxList by Guillermo Rauch http://devthought.com/
 
 Requirements
