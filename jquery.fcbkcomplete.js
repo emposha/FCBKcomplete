@@ -518,7 +518,7 @@
       var cache = {
         'search': function (text, callback) {
           var temp = new Array();
-          var regex = new RegExp(text, (options.filter_case ? "i": "ig"));
+          var regex = new RegExp(text, (options.filter_case ? "g": "gi"));
           $.each(element.data(), function (i, _elem) {
             if (typeof _elem.search === 'function') {
               if (_elem.search(regex) != -1) {
