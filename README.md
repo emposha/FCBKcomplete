@@ -20,20 +20,20 @@ Usage
 To activate FCBKcomplete:
 $("elem").fcbkcomplete({json_url: "fetched.txt", cache: true, filter_case: true, filter_hide: true, newel: true});
 
-Trigger to add new element
+Trigger to add new element:
 $("elem").trigger("addItem",[{"title": "test", "value": "test"}]);
 
-Trigger to remove element
+Trigger to remove element:
 $("elem").trigger("removeItem",[{"value": "test"}]);
 
 Changelog
 ---------
 
-  - 2.8.5 cache object fix (case sensitive) by @ketwaroo
+ - 2.8.5 cache object fix (case sensitive) by @ketwaroo
 
-  - 2.8.4 cache object fix by @tedberg
+ - 2.8.4 cache object fix by @tedberg
   
-  - 2.8.3 no more eval use
+ - 2.8.3 no more eval use
   public function addItem and removeItem fix (thanks to Yaron)
   
  - 2.8.2  json_cache bug fix
