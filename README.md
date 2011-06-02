@@ -15,6 +15,17 @@ FCBKcomplete forks
 ------------------
   https://github.com/partoa/FCBKcomplete
 
+Usage
+-----
+To activate FCBKcomplete:
+$("elem").fcbkcomplete({json_url: "fetched.txt", cache: true, filter_case: true, filter_hide: true, newel: true});
+
+Trigger to add new element
+$("elem").trigger("addItem",[{"title": "test", "value": "test"}]);
+
+Trigger to remove element
+$("elem").trigger("removeItem",[{"value": "test"}]);
+
 Changelog
 ---------
 
