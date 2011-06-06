@@ -1,5 +1,5 @@
 /**
- FCBKcomplete 2.8.5 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ FCBKcomplete v2.8.6 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  - Jquery version required: 1.6.x
 */
 
@@ -64,8 +64,8 @@
           option = $(option);
           temp_elem.data(option.val(), option.text());
           if (option.hasClass("selected")) {
-            addItem(option.text(), option.val(), true, option.hasClass("locked"));
-            temp_elem.append('<option value="'+option.val()+'" selected="selected" class="selected">'+option.text()+'</option>');
+            var id = addItem(option.text(), option.val(), true, option.hasClass("locked"));
+            temp_elem.append('<option value="'+option.val()+'" selected="selected" id="opt_'+id+'"class="selected">'+option.text()+'</option>');
           }
         })
         element.after(temp_elem);
@@ -84,23 +84,24 @@
             removeItem(item);
           }
         });
+        
+        //public method to remove item
+        $(element).bind("destroy", function(event, data) {
+          holder.remove();
+          complete.remove();
+          element.show();
+        });
       }
-
-      //public method to remove item
-      $(this).bind("destroy", function(event, data) {
-        holder.remove();
-        complete.remove();
-        element.show();
-      });
       
       function addItem(title, value, preadded, locked, focusme) {
         if (!maxItems()) {
           return false;
         }
         var liclass = "bit-box" + (locked ? " locked": "");
-        var txt = document.createTextNode(title);
+        var id = randomId();
+        var txt = document.createTextNode(xssDisplay(title));
         var aclose = $('<a class="closebutton" href="#"></a>');
-        var li = $('<li class="'+liclass+'" rel="'+value+'"></li>').prepend(txt).append(aclose);
+        var li = $('<li class="'+liclass+'" rel="'+value+'" id="pt_'+id+'"></li>').prepend(txt).append(aclose);
 
         holder.append(li);
 
@@ -111,7 +112,7 @@
         if (!preadded) {
           $("#" + elemid + "_annoninput").remove();
           addInput(focusme);
-          var _item = $('<option value="'+value+'" class="selected" selected="selected">'+title+'</option>').prop("selected", true);
+          var _item = $('<option value="'+value+'" id="opt_'+id+'" class="selected" selected="selected">'+xssDisplay(title)+'</option>');
           element.append(_item);
           if (options.onselect) {
             funCall(options.onselect, _item);
@@ -120,16 +121,22 @@
         }
         holder.children("li.bit-box.deleted").removeClass("deleted");
         feed.hide();
+        return id;
       }
 
       function removeItem(item) {
         if (!item.hasClass('locked')) {
           item.fadeOut("fast");
+          var id = item.attr('id');
           if (options.onremove) {
-            var _item = element.children("option[value=" + item.attr("rel") + "]");
-            funCall(options.onremove, _item)
+            var _item = id ?  $("#o" + id + "") : element.children("option[value=" + item.attr("rel") + "]");
+            funCall(options.onremove, _item);
           }
-          element.children('option[value="' + item.attr("rel") + '"]').remove();
+          if (id) {
+             $("#o" + id + "").remove();
+          } else {
+            element.children('option[value="' + item.attr("rel") + '"]').remove();
+          }
           item.remove();
           element.change();
           deleting = 0;
@@ -148,6 +155,7 @@
             complete.fadeIn("fast");
           }
         });
+        
         input.blur( function() {
           if (complete_hover) {
             complete.fadeOut("fast");
@@ -155,6 +163,7 @@
             input.focus();
           }
         });
+        
         holder.click( function() {
           input.focus();
           if (feed.length && input.val().length) {
@@ -164,24 +173,19 @@
             complete.children(".default").show();
           }
         });
+        
         input.keypress( function(event) {
-          if (event.keyCode == 13) {
+          if (event.keyCode == _key.enter) {
             return false;
           }
           //auto expand input
           input.attr("size", input.val().length + 1);
         });
-        input.keydown( function(event) {
-          //prevent to enter some bad chars when input is empty
-          if (event.keyCode == 191) {
-            event.preventDefault();
-            return false;
-          }
-        });
+
         input.keyup( function(event) {
           var etext = xssPrevent(input.val());
           
-          if (event.keyCode == 8 && etext.length == 0) {
+          if (event.keyCode == _key.backspace && etext.length == 0) {
             feed.hide();
             if (!holder.children("li.bit-box:last").hasClass('locked')) {
               if (holder.children("li.bit-box.deleted").length == 0) {
@@ -200,9 +204,8 @@
             }
           }
 
-          if (event.keyCode != 40 && event.keyCode != 38 && event.keyCode!=37 && event.keyCode!=39 && etext.length != 0) {
+          if (event.keyCode != _key.downarrow && event.keyCode != _key.uparrow && event.keyCode!= _key.leftarrow && event.keyCode!= _key.rightarrow && etext.length != 0) {
             counter = 0;
-
             if (options.json_url && maxItems()) {
               if (options.cache && json_cache_object.get(etext)) {
                 addMembers(etext);
@@ -211,17 +214,13 @@
                 getBoxTimeout++;
                 var getBoxTimeoutValue = getBoxTimeout;
                 setTimeout( function() {
-                  if (getBoxTimeoutValue != getBoxTimeout)
-                    return;
-                  $.getJSON(options.json_url, {
-                    tag: etext
-                  }, function(data) {
+                  if (getBoxTimeoutValue != getBoxTimeout) return;
+                  $.getJSON(options.json_url, {"tag": etext}, function(data) {
                     addMembers(etext, data);
                     json_cache_object.set(etext, 1);
                     bindEvents();
                   });
-                },
-                options.delay);
+                }, options.delay);
               }
             } else {
               addMembers(etext);
@@ -235,8 +234,7 @@
           setTimeout( function() {
             input.focus();
             complete.children(".default").show();
-          },
-          1);
+          }, 1);
         }
       }
 
@@ -256,13 +254,7 @@
         }
         
         var maximum = options.maxshownitems < cache.length() ? options.maxshownitems: cache.length();
-        var filter = "i";
-        if (options.filter_case) {
-          filter = "";
-        }
-        
         var content = '';
-
         $.each(cache.search(etext), function (i, object) {
           if (options.filter_selected && element.children("option[value=" + object.key + "]").hasClass("selected")) {
             //nothing here...
@@ -271,15 +263,13 @@
             counter++;
             maximum--;
           }
-        });
-        
+        });        
         feed.append(content);
-
         if (options.firstselected) {
           focuson = feed.children("li:visible:first");
           focuson.addClass("auto-focus");
         }
-
+        
         if (counter > options.height) {
           feed.css({
             "height": (options.height * 24) + "px",
@@ -288,6 +278,7 @@
         } else {
           feed.css("height", "auto");
         }
+        
         if (maxItems() && complete.is(':hidden')) {
           complete.show();
         }
@@ -296,16 +287,14 @@
       function itemIllumination(text, etext) {
         if (options.filter_case) {
           try {
-            var regex = new RegExp("(.*)(" + etext + ")(.*)", "ig");
+            var regex = new RegExp("(.*)(" + etext + ")(.*)", ((options.filter_case) ?"g":"ig"));
             var text = text.replace(regex,'$1<em>$2</em>$3');
-          } catch(ex) {
-          };
+          } catch(ex) {};
         } else {
           try {
             var regex = new RegExp("(.*)(" + etext.toLowerCase() + ")(.*)", "gi");
             var text = text.replace(regex,'$1<em>$2</em>$3');
-          } catch(ex) {
-          };
+          } catch(ex) {};
         }
         return text;
       }
@@ -313,8 +302,8 @@
       function bindFeedEvent() {
         feed.children("li").mouseover( function() {
           feed.children("li").removeClass("auto-focus");
-          $(this).addClass("auto-focus");
           focuson = $(this);
+          focuson.addClass("auto-focus");
         });
         feed.children("li").mouseout( function() {
           $(this).removeClass("auto-focus");
@@ -323,9 +312,7 @@
       }
 
       function removeFeedEvent() {
-        feed.children("li").unbind("mouseover");
-        feed.children("li").unbind("mouseout");
-        feed.mousemove( function() {
+        feed.unbind("mouseover").unbind("mouseout").mousemove( function() {
           bindFeedEvent();
           feed.unbind("mousemove");
         });
@@ -334,98 +321,78 @@
       function bindEvents() {
         var maininput = $("#" + elemid + "_annoninput").children(".maininput");
         bindFeedEvent();
-        feed.children("li").unbind("mousedown");
-        feed.children("li").mousedown( function() {
+        
+        feed.children("li").unbind("mousedown").mousedown( function() {
           var option = $(this);
           addItem(option.text(), option.attr("rel"), 0, 0, 1);
           feed.hide();
           complete.hide();
         });
+        
         maininput.unbind("keydown");
         maininput.keydown( function(event) {
-          if (event.keyCode == 191) {
-            event.preventDefault();
-            return false;
-          }
-
-          if (event.keyCode != 8) {
+          
+          if (event.keyCode != _key.backspace) {
             holder.children("li.bit-box.deleted").removeClass("deleted");
           }
 
-          if ((event.keyCode == 13 || event.keyCode == 9) && checkFocusOn()) {
+          if ((event.keyCode == _key.enter || event.keyCode == _key.tab) && checkFocusOn()) {
             var option = focuson;
             addItem(option.text(), option.attr("rel"), 0, 0, 1);
-            complete.hide();
-            event.preventDefault();
-            focuson = null;
-            return false;
+            return _preventDefault(event);
           }
 
-          if ((event.keyCode == 13 || event.keyCode == 9) && !checkFocusOn()) {
+          if ((event.keyCode == _key.enter || event.keyCode == _key.tab) && !checkFocusOn()) {
             if (options.newel) {
               var value = xssPrevent($(this).val());
               addItem(value, value, 0, 0, 1);
-              complete.hide();
-              event.preventDefault();
-              focuson = null;
-              return false;
+              return _preventDefault(event);
             }
-
-            if (options.addontab) {
+            if (options.addontab && options.newel) {
               focuson = feed.children("li:visible:first");
               var option = focuson;
               addItem(option.text(), option.attr("rel"), 0, 0, 1);
-              complete.hide();
-              event.preventDefault();
-              focuson = null;
-              return false;
+              return _preventDefault(event);
             }
           }
 
-          if (event.keyCode == 40) {
-            removeFeedEvent();
-            if (focuson == null || focuson.length == 0) {
-              focuson = feed.children("li:visible:first");
-              feed.get(0).scrollTop = 0;
-            } else {
-              focuson.removeClass("auto-focus");
-              focuson = focuson.nextAll("li:visible:first");
-              var prev = parseInt(focuson.prevAll("li:visible").length, 10);
-              var next = parseInt(focuson.nextAll("li:visible").length, 10);
-              if ((prev > Math.round(options.height / 2) || next <= Math.round(options.height / 2)) && typeof(focuson.get(0)) != "undefined") {
-                feed.get(0).scrollTop = parseInt(focuson.get(0).scrollHeight, 10) * (prev - Math.round(options.height / 2));
-              }
-            }
-            feed.children("li").removeClass("auto-focus");
-            focuson.addClass("auto-focus");
-          }
-          if (event.keyCode == 38) {
-            removeFeedEvent();
-            if (focuson == null || focuson.length == 0) {
-              focuson = feed.children("li:visible:last");
-              feed.get(0).scrollTop = parseInt(focuson.get(0).scrollHeight, 10) * (parseInt(feed.children("li:visible").length, 10) - Math.round(options.height / 2));
-            } else {
-              focuson.removeClass("auto-focus");
-              focuson = focuson.prevAll("li:visible:first");
-              var prev = parseInt(focuson.prevAll("li:visible").length, 10);
-              var next = parseInt(focuson.nextAll("li:visible").length, 10);
-              if ((next > Math.round(options.height / 2) || prev <= Math.round(options.height / 2)) && typeof(focuson.get(0)) != "undefined") {
-                feed.get(0).scrollTop = parseInt(focuson.get(0).scrollHeight, 10) * (prev - Math.round(options.height / 2));
-              }
-            }
-            feed.children("li").removeClass("auto-focus");
-            focuson.addClass("auto-focus");
+          if (event.keyCode == _key.downarrow) {
+            nextItem('first');
+          }          
+          if (event.keyCode == _key.uparrow) {
+            nextItem('last');
           }
         });
+      }
+      
+      function nextItem(position) {
+        removeFeedEvent();
+        if (focuson == null || focuson.length == 0) {
+          focuson = feed.children("li:visible:" + position);
+          feed.get(0).scrollTop = position == 'first' ? 0 : parseInt(focuson.get(0).scrollHeight, 10) * (parseInt(feed.children("li:visible").length, 10) - Math.round(options.height / 2));
+        } else {
+          focuson.removeClass("auto-focus");
+          focuson = position == 'first' ? focuson.nextAll("li:visible:first") : focuson.prevAll("li:visible:first");
+          var prev = parseInt(focuson.prevAll("li:visible").length, 10);
+          var next = parseInt(focuson.nextAll("li:visible").length, 10);
+          if (((position == 'first' ? prev : next) > Math.round(options.height / 2) || (position == 'first' ? prev : next) <= Math.round(options.height / 2)) && typeof(focuson.get(0)) != "undefined") {
+            feed.get(0).scrollTop = parseInt(focuson.get(0).scrollHeight, 10) * (prev - Math.round(options.height / 2));
+          }
+        }
+        feed.children("li").removeClass("auto-focus");
+        focuson.addClass("auto-focus");
+      }
+      
+      function _preventDefault(event) {
+        complete.hide();
+        event.preventDefault();
+        focuson = null;
+        return false;
       }
 
       function maxItems() {
         if (options.maxitems != 0) {
-          if (holder.children("li.bit-box").length < options.maxitems) {
-            return true;
-          } else {
-            return false;
-          }
+          return (holder.children("li.bit-box").length < options.maxitems);
         }
       }
 
@@ -435,41 +402,36 @@
           if (value.length == 0) {
             return;
           }
-          var li = $('<li rel="'+value+'" fckb="1"">').html(value);
+          var li = $('<li rel="'+value+'" fckb="1"">').html(xssDisplay(value));
           feed.prepend(li);
           counter++;
-        } else {
-          return;
         }
+        return;
       }
 
       function funCall(func, item) {
-        var _object = "";
+        var _object = {};
         for (i = 0; i < item.get(0).attributes.length; i++) {
           if (item.get(0).attributes[i].nodeValue != null) {
-            _object += "\"_" + item.get(0).attributes[i].nodeName + "\": \"" + item.get(0).attributes[i].nodeValue + "\",";
+            _object["_" + item.get(0).attributes[i].nodeName] = item.get(0).attributes[i].nodeValue;
           }
         }
-        _object = "{" + _object + " notinuse: 0}";
-        func.call(func, _object);
+        return func.call(func, _object);
       }
 
       function checkFocusOn() {
-        if (focuson == null) {
-          return false;
-        }
-        if (focuson.length == 0) {
+        if (focuson == null || focuson.length == 0) {
           return false;
         }
         return true;
       }
 
       function xssPrevent(string) {
-        string = string.replace(/[\"\'][\s]*javascript:(.*)[\"\']/g, "\"\"");
-        string = string.replace(/script(.*)/g, "");
-        string = string.replace(/eval\((.*)\)/g, "");
-        string = string.replace('/([\x00-\x08,\x0b-\x0c,\x0e-\x19])/', '');
-        return string;
+        return escape(string.replace(/script(.*)/g, ""));
+      }
+      
+      function xssDisplay(string) {
+        return unescape(string);
       }
 
       var options = $.extend({
@@ -515,6 +477,18 @@
         }
       }
       
+      var _key =  {'enter': 13, 'tab': 9, 'backspace': 8, 'leftarrow': 37, 'uparrow': 38,'rightarrow': 39, 'downarrow': 40};
+      
+      var randomId = function() {
+        var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+        var randomstring = '';
+        for (var i = 0; i < 32; i++) {
+            var rnum = Math.floor(Math.random() * chars.length);
+            randomstring += chars.substring(rnum, rnum + 1);
+        }
+        return randomstring;
+      }
+      
       var cache = {
         'search': function (text, callback) {
           var temp = new Array();
@@ -547,9 +521,7 @@
           return count;
         }
       };
-
       init();
-
       return this;
     });
   };

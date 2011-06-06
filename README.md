@@ -3,7 +3,7 @@ FCBKcomplete
 ============
 FCBKcomplete is fancy facebook-like dynamic inputs with auto complete & pre added values.
 
-FCBKcomplete v2.8.5 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+FCBKcomplete is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
 
 FCBKcomplete based on TextboxList by Guillermo Rauch http://devthought.com/
 
@@ -29,6 +29,10 @@ Trigger to remove element:
 
     $("elem").trigger("removeItem",[{"value": "test"}]);
 
+Trigger to remove fcbkcomplete:
+
+    $("elem").trigger("destroy");
+
 Options
 -------
 
@@ -51,6 +55,11 @@ Options
 
 Changelog
 ---------
+ - 2.8.6 illumination function fix by @ketwaroo
+  addontab new item insertion fix
+  funcall object fix by @fduch2k
+  unique identifier per added element (support element with same value)
+  added support for specail characters (',\,/,")
 
  - 2.8.5 cache object fix (case sensitive) by @ketwaroo
 
