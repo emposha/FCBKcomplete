@@ -248,16 +248,16 @@
         addTextItem(etext);
         if (data != null && data.length) {
           $.each(data, function(i, val) {
-            cache.set(val.key, val.value);
+            cache.set(xssPrevent(val.key), xssPrevent(val.value));
           });
         }        
         var maximum = options.maxshownitems < cache.length() ? options.maxshownitems: cache.length();
         var content = '';
-        $.each(cache.search(xssDisplay(etext)), function (i, object) {
+        $.each(cache.search(etext), function (i, object) {
           if (options.filter_selected && element.children("option[value=" + object.key + "]").hasClass("selected")) {
             //nothing here...
           } else {
-            content += '<li rel="' + object.key + '">' + itemIllumination(object.value, etext) + '</li>';
+            content += '<li rel="' + object.key + '">' + xssDisplay(itemIllumination(object.value, etext)) + '</li>';
             counter++;
             maximum--;
           }
