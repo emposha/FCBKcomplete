@@ -242,22 +242,18 @@
 
       function addMembers(etext, data) {
         feed.html('');
-
         if (!options.cache && data != null) {
           cache.clear();
         }
-
         addTextItem(etext);
-
         if (data != null && data.length) {
           $.each(data, function(i, val) {
             cache.set(val.key, val.value);
           });
-        }
-        
+        }        
         var maximum = options.maxshownitems < cache.length() ? options.maxshownitems: cache.length();
         var content = '';
-        $.each(cache.search(etext), function (i, object) {
+        $.each(cache.search(xssDisplay(etext)), function (i, object) {
           if (options.filter_selected && element.children("option[value=" + object.key + "]").hasClass("selected")) {
             //nothing here...
           } else {
