@@ -7,6 +7,7 @@
 
 /**
  * json_url         - url to fetch json object
+ * json_data        - data to use instead of json
  * cache            - use cache
  * height           - maximum number of element shown before scroll will apear
  * newel            - show typed text like a element
@@ -49,6 +50,13 @@
         holder.after(complete.prepend(feed));
         feed.css("width", complete.width());
         elPrepare();
+		if (options.json_data != null && options.json_data.length) {
+            options.cache = true;
+            cache.clear();
+            $.each(options.json_data, function (i, val) {
+                cache.set(xssPrevent(val.key), xssPrevent(val.value));
+            });
+        }
       }
 
       function elPrepare() {
@@ -208,7 +216,11 @@
 
           if (event.keyCode != _key.downarrow && event.keyCode != _key.uparrow && event.keyCode!= _key.leftarrow && event.keyCode!= _key.rightarrow && etext.length != 0) {
             counter = 0;
-            if (options.json_url && maxItems()) {
+			if (options.json_data && maxItems()) {
+                addMembers(etext);
+                bindEvents();
+            }
+            else if (options.json_url && maxItems()) {
               if (options.cache && json_cache_object.get(etext)) {
                 addMembers(etext);
                 bindEvents();
@@ -446,6 +458,7 @@
       }
 
       var options = $.extend({
+		json_data: null,
         json_url: null,
         cache: false,
         height: "10",
