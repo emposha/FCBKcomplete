@@ -43,6 +43,7 @@ Options
  * firstselected    - automaticly select first element from dropdown
  * filter_case      - case sensitive filter
  * filter_selected  - filter selected items from list
+ * filter_begin     - filter only from begin
  * complete_text    - text for complete page
  * maxshownitems    - maximum numbers that will be shown at dropdown list (less better performance)
  * onselect         - fire event on item select
@@ -55,6 +56,9 @@ Options
 
 Changelog
 ---------
+ - 2.8.7 addItem fix when value is not a string by @meltix
+         new option added (filter_begin) enable filtration from begining
+
  - 2.8.6 illumination function fix by @ketwaroo
   addontab new item insertion fix
   funcall object fix by @fduch2k

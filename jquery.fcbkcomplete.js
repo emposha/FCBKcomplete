@@ -1,5 +1,5 @@
 /**
- FCBKcomplete v2.8.6 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ FCBKcomplete v2.8.7 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  - Jquery version required: 1.6.x
 */
 
@@ -13,6 +13,7 @@
  * firstselected    - automaticly select first element from dropdown
  * filter_case      - case sensitive filter
  * filter_selected  - filter selected items from list
+ * filter_begin     - filter only from begin
  * complete_text    - text for complete page
  * maxshownitems    - maximum numbers that will be shown at dropdown list (less better performance)
  * onselect         - fire event on item select
@@ -283,17 +284,13 @@
       }
 
       function itemIllumination(text, etext) {
-        if (options.filter_case) {
-          try {
-            var regex = new RegExp("(.*)(" + etext + ")(.*)", ((options.filter_case) ?"g":"gi"));
-            var text = text.replace(regex,'$1<em>$2</em>$3');
-          } catch(ex) {};
-        } else {
-          try {
-            var regex = new RegExp("(.*)(" + etext.toLowerCase() + ")(.*)", "gi");
-            var text = text.replace(regex,'$1<em>$2</em>$3');
-          } catch(ex) {};
-        }
+        var string_regex_adder = options.filter_begin ? '': '(.*)';
+        var regex_result = options.filter_begin ? '<em>$1</em>$2' : '$1<em>$2</em>$3';
+        var string_regex = string_regex_adder + options.filter_case ? "(" + etext + ")(.*)" : "(" + etext.toLowerCase() + ")(.*)";
+        try {
+          var regex = new RegExp(string_regex, ((options.filter_case) ? "g":"gi"));
+          var text = text.replace(regex, regex_result);
+        } catch(ex) {};
         return text;
       }
 
@@ -438,6 +435,7 @@
       }
       
       function xssDisplay(string, flag) {
+        string = string.toString();
         string = string.replace('\\', "");
         if (typeof flag != "undefined") {
           return string;
@@ -454,6 +452,7 @@
         firstselected: false,
         filter_case: false,
         filter_selected: false,
+        filter_begin: false,
         complete_text: "Start to type...",
         maxshownitems: 30,
         maxitems: 10,
@@ -516,7 +515,7 @@
       var cache = {
         'search': function (text, callback) {
           var temp = new Array();
-          var regex = new RegExp(text, (options.filter_case ? "g": "gi"));
+          var regex = new RegExp((options.filter_begin ? '^' : '') + text, (options.filter_case ? "g": "gi"));
           $.each(element.data(), function (i, _elem) {
             if (typeof _elem.search === 'function') {
               if (_elem.search(regex) != -1) {
