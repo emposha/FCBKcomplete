@@ -23,6 +23,9 @@
  * addontab         - add first visible element on tab or enter hit
  * attachto         - after this element fcbkcomplete insert own elements
  * bricket          - use square bricket with select (needed for asp or php) enabled by default
+ * input_tabindex   - the tabindex of the input element
+ * input_min_size   - minimum size of the input element (default: 1)
+ * input_name       - value of the input element's 'name'-attribute (no 'name'-attribute set if empty)
  */
 
 (function( $, undefined ) {
@@ -148,7 +151,9 @@
 
       function addInput(focusme) {
         var li = $('<li class="bit-input" id="'+elemid + '_annoninput">');
-        var input = $('<input type="text" class="maininput" size="1" autocomplete="off">');
+        var input = $('<input type="text" class="maininput" size="' + options.input_min_size + '" autocomplete="off">');
+        if (options.input_tabindex > 0) input.attr("tabindex", options.input_tabindex);
+        if (options.input_name != "") input.attr("name", options.input_name);
         var getBoxTimeout = 0;
 
         holder.append(li.append(input));
@@ -182,7 +187,9 @@
             return false;
           }
           //auto expand input
-          input.attr("size", input.val().length + 1);
+          var newsize = input.val().length + 1;
+          if (options.input_min_size > newsize) newsize = options.input_min_size;
+          input.attr("size", newsize);
         });
 
         input.keyup( function(event) {
@@ -286,7 +293,7 @@
       function itemIllumination(text, etext) {
         var string_regex_adder = options.filter_begin ? '': '(.*)';
         var regex_result = options.filter_begin ? '<em>$1</em>$2' : '$1<em>$2</em>$3';
-        var string_regex = string_regex_adder + options.filter_case ? "(" + etext + ")(.*)" : "(" + etext.toLowerCase() + ")(.*)";
+        var string_regex = string_regex_adder + (options.filter_case ? "(" + etext + ")(.*)" : "(" + etext.toLowerCase() + ")(.*)");
         try {
           var regex = new RegExp(string_regex, ((options.filter_case) ? "g":"gi"));
           var text = text.replace(regex, regex_result);
@@ -460,6 +467,9 @@
         onremove: null,
         attachto: null,
         delay: 350,
+        input_tabindex: 0,
+        input_min_size: 1,
+        input_name: "",
         bricket: true
       },
       opt);
