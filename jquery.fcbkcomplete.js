@@ -286,7 +286,7 @@
       function itemIllumination(text, etext) {
         var string_regex_adder = options.filter_begin ? '': '(.*)';
         var regex_result = options.filter_begin ? '<em>$1</em>$2' : '$1<em>$2</em>$3';
-        var string_regex = string_regex_adder + options.filter_case ? "(" + etext + ")(.*)" : "(" + etext.toLowerCase() + ")(.*)";
+        var string_regex = string_regex_adder + (options.filter_case ? "(" + etext + ")(.*)" : "(" + etext.toLowerCase() + ")(.*)");
         try {
           var regex = new RegExp(string_regex, ((options.filter_case) ? "g":"gi"));
           var text = text.replace(regex, regex_result);
