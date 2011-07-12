@@ -23,7 +23,9 @@
  * addontab         - add first visible element on tab or enter hit
  * attachto         - after this element fcbkcomplete insert own elements
  * bricket          - use square bricket with select (needed for asp or php) enabled by default
- * tabindex         - the tabindex of the input element
+ * input_tabindex   - the tabindex of the input element
+ * input_min_size   - minimum size of the input element (default: 1)
+ * input_name       - value of the input element's 'name'-attribute (no 'name'-attribute set if empty)
  */
 
 (function( $, undefined ) {
@@ -149,8 +151,9 @@
 
       function addInput(focusme) {
         var li = $('<li class="bit-input" id="'+elemid + '_annoninput">');
-        var input = $('<input type="text" class="maininput" size="1" autocomplete="off">');
-        if (options.tabindex > 0) input.attr("tabindex", options.tabindex);
+        var input = $('<input type="text" class="maininput" size="' + options.input_min_size + '" autocomplete="off">');
+        if (options.input_tabindex > 0) input.attr("tabindex", options.input_tabindex);
+        if (options.input_name != "") input.attr("name", options.input_name);
         var getBoxTimeout = 0;
 
         holder.append(li.append(input));
@@ -462,7 +465,9 @@
         onremove: null,
         attachto: null,
         delay: 350,
-        tabindex: 0,
+        input_tabindex: 0,
+        input_min_size: 1,
+        input_name: "",
         bricket: true
       },
       opt);
