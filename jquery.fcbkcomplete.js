@@ -187,7 +187,9 @@
             return false;
           }
           //auto expand input
-          input.attr("size", input.val().length + 1);
+          var newsize = input.val().length + 1;
+          if (options.input_min_size > newsize) newsize = options.input_min_size;
+          input.attr("size", newsize);
         });
 
         input.keyup( function(event) {
