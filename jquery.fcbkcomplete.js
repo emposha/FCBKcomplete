@@ -512,6 +512,7 @@
         maxshownitems: 30,
         maxitems: 10,
         onselect: null,
+        onchange: null,
         onremove: null,
         attachto: null,
         delay: 350,
@@ -562,7 +563,7 @@
                    'squarebricket_left': 91,
                    'apostrof': 96,
                    'comma': 188,
-                   'comma_cc': 44
+                   'comma_cc': 44 // dirty hack; the charcode of ',' differs from the keycode
                  };
       
       var randomId = function() {
