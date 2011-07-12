@@ -18,6 +18,7 @@
  * maxshownitems    - maximum numbers that will be shown at dropdown list (less better performance)
  * onselect         - fire event on item select
  * onremove         - fire event on item remove
+ * onchange         - fire event when an item is added or deleted
  * maxitimes        - maximum items that can be added
  * delay            - delay between ajax request (bigger delay, lower server time request)
  * addontab         - add first visible element on tab or enter hit
@@ -26,6 +27,9 @@
  * input_tabindex   - the tabindex of the input element
  * input_min_size   - minimum size of the input element (default: 1)
  * input_name       - value of the input element's 'name'-attribute (no 'name'-attribute set if empty)
+ * tab_leaves_input - if set to true, then the tab key leaves the fcbkcomplete-input and goes to the next form element. If addontab==true, a new element will be created before leaving.
+ * comma_separator  - if set to true, the comma will separate different elements
+ * prevent_empty_elements
  */
 
 (function( $, undefined ) {
@@ -103,6 +107,16 @@
         if (!maxItems()) {
           return false;
         }
+        if (options.prevent_empty_elements && value == "") return false;
+        
+        if (options.comma_separator && options.newel) {
+          var elements = value.split(",");
+          if (elements.length > 1) {
+            for (var i = 0; i < elements.length; i++) addItem($.trim(elements[i]), $.trim(elements[i]), preadded, locked, focusme);
+            return false;
+          }
+        }
+        
         var liclass = "bit-box" + (locked ? " locked": "");
         var id = randomId();
         var txt = document.createTextNode(xssDisplay(title));
@@ -122,6 +136,9 @@
           element.append(_item);
           if (options.onselect) {
             funCall(options.onselect, _item);
+          }
+          if (options.onchange) {
+            funCall(options.onchange, _item);
           }
           element.change();
         }
@@ -143,6 +160,7 @@
           } else {
             element.children('option[value="' + item.attr("rel") + '"]').remove();
           }
+          if (options.onchange) funCall(options.onchange, item);
           item.remove();
           element.change();
           deleting = 0;
@@ -191,6 +209,10 @@
           if (options.input_min_size > newsize) newsize = options.input_min_size;
           input.attr("size", newsize);
         });
+        
+        input.keydown( function(event) {
+          if (options.prevent_empty_elements && (options.comma_separator && event.keyCode == _key.comma) && $(this).val() == "") event.preventDefault();
+        });
 
         input.keyup( function(event) {
           var etext = xssPrevent(input.val(), 1);
@@ -216,6 +238,7 @@
 
           if (event.keyCode != _key.downarrow && event.keyCode != _key.uparrow && event.keyCode!= _key.leftarrow && event.keyCode!= _key.rightarrow && etext.length != 0) {
             counter = 0;
+            focuson = null;
             if (options.json_url && maxItems()) {
               if (options.cache && json_cache_object.get(etext)) {
                 addMembers(etext);
@@ -338,13 +361,38 @@
             holder.children("li.bit-box.deleted").removeClass("deleted");
           }
 
-          if ((event.keyCode == _key.enter || event.keyCode == _key.tab) && checkFocusOn()) {
+          var add_item_key = (event.keyCode == _key.enter);
+          if (event.keyCode == _key.tab && !options.tab_leaves_input) add_item_key = true;
+          if (event.keyCode == _key.comma && options.comma_separator) add_item_key = true;
+
+          if (options.prevent_empty_elements && add_item_key && $(this).val() == "") {
+            event.preventDefault();
+            return false;
+          }
+          
+          if (event.keyCode == _key.tab && options.tab_leaves_input && $(this).val() != "" && options.newel && options.addontab) {
+            if (checkFocusOn()) {
+              var option = focuson;
+              var delayed = function() {
+                addItem(option.text(), option.attr("rel"), 0, 0, 0);
+              };
+            } else {
+              var value = xssPrevent($(this).val());
+              var delayed = function() {
+                addItem(value, value, 0, 0, 0);
+              };
+            }
+            window.setTimeout(delayed, 1);
+            return true;
+          }
+          
+          if (add_item_key && checkFocusOn()) {
             var option = focuson;
             addItem(option.text(), option.attr("rel"), 0, 0, 1);
             return _preventDefault(event);
           }
 
-          if ((event.keyCode == _key.enter || event.keyCode == _key.tab) && !checkFocusOn()) {
+          if (add_item_key && !checkFocusOn()) {
             if (options.newel) {
               var value = xssPrevent($(this).val());
               addItem(value, value, 0, 0, 1);
@@ -430,7 +478,7 @@
         if (typeof flag != "undefined") {
           for(i = 0; i < string.length; i++) {
             var charcode = string.charCodeAt(i);
-            if ((_key.exclamation <= charcode && charcode <= _key.slash) || 
+            if ((_key.exclamation <= charcode && charcode <= _key.slash && charcode != _key.comma_cc) || 
                 (_key.colon <= charcode && charcode <= _key.at) || 
                 (_key.squarebricket_left <= charcode && charcode <= _key.apostrof)) {
               string = string.replace(string[i], escape(string[i]));
@@ -470,6 +518,9 @@
         input_tabindex: 0,
         input_min_size: 1,
         input_name: "",
+        tab_leaves_input: false,
+        comma_separator: false,
+        prevent_empty_elements: false,
         bricket: true
       },
       opt);
@@ -509,7 +560,9 @@
                    'colon': 58,
                    'at': 64,
                    'squarebricket_left': 91,
-                   'apostrof': 96
+                   'apostrof': 96,
+                   'comma': 188,
+                   'comma_cc': 44
                  };
       
       var randomId = function() {
