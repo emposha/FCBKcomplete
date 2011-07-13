@@ -185,12 +185,14 @@
         holder.append(li.append(input));
 
         input.focus( function() {
+          isactive = true;
           if (maxItems()) {
             complete.fadeIn("fast");
           }
         });
         
         input.blur( function() {
+          isactive = false;
           if (complete_hover) {
             complete.fadeOut("fast");
           } else {
@@ -257,6 +259,8 @@
                 setTimeout( function() {
                   if (getBoxTimeoutValue != getBoxTimeout) return;
                   $.getJSON(options.json_url, {"tag": xssDisplay(etext)}, function(data) {
+                    if (!isactive) return; // prevents opening the selection again after the focus is already off
+                    
                     var current_etext = xssPrevent(input.val(), 1);;
                     if (current_etext != etext) return;
                     
@@ -544,6 +548,7 @@
       var complete = null;
       var counter = 0;
       
+      var isactive = false;
       var focuson = null;
       var deleting = 0;
       var complete_hover = 1;
