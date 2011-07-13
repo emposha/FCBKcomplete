@@ -221,7 +221,9 @@
         });
         
         input.keydown( function(event) {
-          if (options.prevent_empty_elements && (options.comma_separator && event.keyCode == _key.comma) && $(this).val() == "") event.preventDefault();
+          if (isAddItemKey(event.keyCode)) {
+            return handleAddItemKey(event, $(this));
+          }
         });
 
         input.keyup( function(event) {
@@ -357,7 +359,35 @@
           feed.unbind("mousemove");
         });
       }
-
+      
+      function isAddItemKey(keyCode) {
+          if (keyCode == _key.enter || keyCode == _key.tab) return true;
+          if (keyCode == _key.comma && options.comma_separator) return true;
+      }
+      
+      function handleAddItemKey(event, $input) {
+        if (options.prevent_empty_elements && $input.val() == "") {
+          if (event.keyCode == _key.tab && options.tab_leaves_input) return true;
+          else event.preventDefault();
+        }
+        
+        if (checkFocusOn()) {
+          var title = focuson.text();
+          var value = focuson.attr("rel");
+        } else {
+          var title = xssPrevent($input.val());
+          var value = title;
+        }
+        if (event.keyCode == _key.tab && options.tab_leaves_input) {
+          if (options.newel && options.addontab) window.setTimeout(function() {
+            addItem(title, value, 0, 0, 0);
+          }, 1);
+        } else {
+          if (options.newel && options.addontab) addItem(title, value, 0, 0, 1);
+          _preventDefault(event);
+        }
+      }
+      
       function bindEvents() {
         var maininput = $("#" + elemid + "_annoninput").children(".maininput");
         bindFeedEvent();
@@ -376,51 +406,10 @@
             holder.children("li.bit-box.deleted").removeClass("deleted");
           }
 
-          var add_item_key = (event.keyCode == _key.enter);
-          if (event.keyCode == _key.tab && !options.tab_leaves_input) add_item_key = true;
-          if (event.keyCode == _key.comma && options.comma_separator) add_item_key = true;
-
-          if (options.prevent_empty_elements && add_item_key && $(this).val() == "") {
-            event.preventDefault();
-            return false;
+          if (isAddItemKey(event.keyCode)) {
+            return handleAddItemKey(event, $(this));
           }
           
-          if (event.keyCode == _key.tab && options.tab_leaves_input && $(this).val() != "" && options.newel && options.addontab) {
-            if (checkFocusOn()) {
-              var option = focuson;
-              var delayed = function() {
-                addItem(option.text(), option.attr("rel"), 0, 0, 0);
-              };
-            } else {
-              var value = xssPrevent($(this).val());
-              var delayed = function() {
-                addItem(value, value, 0, 0, 0);
-              };
-            }
-            window.setTimeout(delayed, 1);
-            return true;
-          }
-          
-          if (add_item_key && checkFocusOn()) {
-            var option = focuson;
-            addItem(option.text(), option.attr("rel"), 0, 0, 1);
-            return _preventDefault(event);
-          }
-
-          if (add_item_key && !checkFocusOn()) {
-            if (options.newel) {
-              var value = xssPrevent($(this).val());
-              addItem(value, value, 0, 0, 1);
-              return _preventDefault(event);
-            }
-            if (options.addontab && options.newel) {
-              focuson = feed.children("li:visible:first");
-              var option = focuson;
-              addItem(option.text(), option.attr("rel"), 0, 0, 1);
-              return _preventDefault(event);
-            }
-          }
-
           if (event.keyCode == _key.downarrow) {
             nextItem('first');
           }          
