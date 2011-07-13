@@ -76,7 +76,7 @@
           temp_elem.data(option.val(), option.text());
           if (option.hasClass("selected")) {
             var id = addItem(option.text(), option.val(), true, option.hasClass("locked"));
-            temp_elem.append('<option value="'+option.val()+'" selected="selected" id="opt_'+id+'"class="selected">'+option.text()+'</option>');
+            if (id !== false) temp_elem.append('<option value="'+option.val()+'" selected="selected" id="opt_'+id+'"class="selected">'+option.text()+'</option>');
           }
         });
         
@@ -119,7 +119,7 @@
           }
         }
         
-        if (options.prevent_duplicate_elements && element.find('option[value="' + xssDisplay(value, 1) + '"]').length > 0) {
+        if (options.prevent_duplicate_elements && element.find('option[value="' + xssDisplay(value, 1) + '"]').length > 0 && !preadded) {
           $("#" + elemid + "_annoninput").remove();
           addInput(focusme);
           return false;
