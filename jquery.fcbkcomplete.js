@@ -250,6 +250,9 @@
                 setTimeout( function() {
                   if (getBoxTimeoutValue != getBoxTimeout) return;
                   $.getJSON(options.json_url, {"tag": xssDisplay(etext)}, function(data) {
+                    var current_etext = xssPrevent(input.val(), 1);;
+                    if (current_etext != etext) return;
+                    
                     addMembers(etext, data);
                     json_cache_object.set(etext, 1);
                     bindEvents();
