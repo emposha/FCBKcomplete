@@ -29,7 +29,8 @@
  * input_name       - value of the input element's 'name'-attribute (no 'name'-attribute set if empty)
  * tab_leaves_input - if set to true, then the tab key leaves the fcbkcomplete-input and goes to the next form element. If addontab==true, a new element will be created before leaving.
  * comma_separator  - if set to true, the comma will separate different elements
- * prevent_empty_elements
+ * prevent_empty_elements [boolean]
+ * prevent_duplicate_elements [boolean]
  */
 
 (function( $, undefined ) {
@@ -116,6 +117,12 @@
             for (var i = 0; i < elements.length; i++) addItem($.trim(elements[i]), $.trim(elements[i]), preadded, locked, focusme);
             return false;
           }
+        }
+        
+        if (options.prevent_duplicate_elements && element.find('option[value="' + xssDisplay(value, 1) + '"]').length > 0) {
+          $("#" + elemid + "_annoninput").remove();
+          addInput(focusme);
+          return false;
         }
         
         var liclass = "bit-box" + (locked ? " locked": "");
@@ -526,6 +533,7 @@
         tab_leaves_input: false,
         comma_separator: false,
         prevent_empty_elements: false,
+        prevent_duplicate_elements: false,
         bricket: true
       },
       opt);
