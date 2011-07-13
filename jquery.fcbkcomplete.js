@@ -380,6 +380,7 @@
         }
         if (event.keyCode == _key.tab && options.tab_leaves_input) {
           if (options.newel && options.addontab) window.setTimeout(function() {
+             // addItem removes the input field, which currently has the focus; this should happen after all event-handlers (in the meantime, the browser focuses the next form element according to the tabindex)
             addItem(title, value, 0, 0, 0);
           }, 1);
         } else {
