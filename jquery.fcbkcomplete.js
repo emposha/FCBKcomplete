@@ -51,7 +51,8 @@
         } else {
           element.after(holder);
         }
-        complete = $('<div class="facebook-auto">').append('<div class="default">' + options.complete_text + "</div>");
+        complete = $('<div class="facebook-auto">');
+        if (options.complete_text != "") complete.append('<div class="default">' + options.complete_text + "</div>");
         complete.hover(function() {complete_hover = 0;}, function() {complete_hover = 1;});
         feed = $('<ul id="'+elemid+'_feed"></ul>');
         holder.after(complete.prepend(feed));
