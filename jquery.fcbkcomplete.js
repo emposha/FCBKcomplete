@@ -69,8 +69,9 @@
           }
         }
 
-        var temp_elem = $('<'+element.get(0).tagName+' name="'+name+'" id="'+elemid+'" multiple="multiple" class="hidden">');
+        var temp_elem = $('<'+element.get(0).tagName+' name="'+name+'" id="'+elemid+'" multiple="multiple" class="' + element.get(0).className + ' hidden">');
         
+
         $.each(element.children('option'), function(i, option) {
           option = $(option);
           temp_elem.data(option.val(), option.text());
