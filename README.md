@@ -33,6 +33,10 @@ Trigger to remove fcbkcomplete:
 
     $("elem").trigger("destroy");
 
+Json format:
+
+    [{"key": "key1", "value": "value1"}, {"key": "key2", "value": "value2"}]
+
 Options
 -------
 
@@ -53,6 +57,9 @@ Options
  * addontab         - add first visible element on tab or enter hit
  * attachto         - after this element fcbkcomplete insert own elements
  * bricket          - use square bricket with select (needed for asp or php) enabled by default
+ * input_tabindex   - the tabindex of the input element
+ * input_min_size   - minimum size of the input element (default: 1)
+ * input_name       - value of the input element's 'name'-attribute (no 'name'-attribute set if empty)
 
 Changelog
 ---------
