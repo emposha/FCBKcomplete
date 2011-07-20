@@ -53,9 +53,22 @@ Options
  * addontab         - add first visible element on tab or enter hit
  * attachto         - after this element fcbkcomplete insert own elements
  * bricket          - use square bricket with select (needed for asp or php) enabled by default
+ * input_tabindex   - the tabindex of the input element
+ * input_min_size   - minimum size of the input element (default: 1)
+ * input_name       - value of the input element's 'name'-attribute (no 'name'-attribute set if empty)
+ * tab_leaves_input - if set to true, then the tab key leaves the fcbkcomplete-input and goes to the next form element. If addontab==true, a new element will be created before leaving.
+ * comma_separator  - if set to true, the comma will separate different elements
+ * prevent_empty_elements [boolean]
+ * prevent_duplicate_elements [boolean]
+
 
 Changelog
 ---------
+ - ?????
+   json_cache and cache object rewritten, to allow keys with special characters (like '-')
+   new options: input_tabindex, input_min_size, input_name, tab_leaves_input, comma_separator, prevent_empty_elements, prevent_duplicate_elements
+   xssPrevent() does NOT escape the comma character anymore.
+   
  - 2.8.7 addItem fix when value is not a string by @meltix
          new option added (filter_begin) enable filtration from begining
 

@@ -484,7 +484,7 @@
         if (typeof flag != "undefined") {
           for(i = 0; i < string.length; i++) {
             var charcode = string.charCodeAt(i);
-            if ((_key.exclamation <= charcode && charcode <= _key.slash && charcode != _key.comma_cc) || 
+            if ((_key.exclamation <= charcode && charcode <= _key.slash) || 
                 (_key.colon <= charcode && charcode <= _key.at) || 
                 (_key.squarebricket_left <= charcode && charcode <= _key.apostrof)) {
               string = string.replace(string[i], escape(string[i]));
@@ -550,10 +550,15 @@
       var json_cache = $('<div></div>').after(element);
       var json_cache_object = {
         'set': function (id, val) {
-          json_cache.data(id, val);
+          var old_data = json_cache.data("cache");
+          if (typeof(old_data) == "undefined") old_data = {};
+          old_data[id] = val;
+          json_cache.data("cache", old_data);
         },
         'get': function(id) {
-          return json_cache.data(id);
+          var old_data = json_cache.data("cache");
+          if (typeof(old_data) == "undefined") return;
+          return old_data[id];
         }
       };
       
@@ -570,8 +575,7 @@
                    'at': 64,
                    'squarebricket_left': 91,
                    'apostrof': 96,
-                   'comma': 188,
-                   'comma_cc': 44 // dirty hack; the charcode of ',' differs from the keycode
+                   'comma': 188
                  };
       
       var randomId = function() {
@@ -588,7 +592,7 @@
         'search': function (text, callback) {
           var temp = new Array();
           var regex = new RegExp((options.filter_begin ? '^' : '') + text, (options.filter_case ? "g": "gi"));
-          $.each(element.data(), function (i, _elem) {
+          $.each(element.data("cache"), function (i, _elem) {
             if (typeof _elem.search === 'function') {
               if (_elem.search(regex) != -1) {
                 temp.push({'key': i, 'value': _elem});
@@ -598,22 +602,23 @@
           return temp;
         },
         'set': function (id, val) {
-          element.data(id, val);
+          var old_data = element.data("cache");
+          if (typeof(old_data) == "undefined") old_data = {};
+          old_data[id] = val;
+          element.data("cache", old_data);
         },
         'get': function(id) {
-          return element.data(id);
+          var data = element.data("cache");
+          if (typeof(data) == "undefined") return;
+          return data[id];
         },
         'clear': function() {
-          element.removeData();
+          element.data("cache", {});
         },
         'length': function() {
-          var count = 0;
-          for (var k in this) {
-            if (this.hasOwnProperty(k)) {
-              ++count;
-            }
-          }
-          return count;
+          var data = element.data("cache");
+          if (typeof(data) == "undefined") return 0;
+          return data.length;
         }
       };
       
