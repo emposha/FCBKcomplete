@@ -13,6 +13,8 @@ Jquery version required: 1.6.x
 
 FCBKcomplete forks
 ------------------
+  https://github.com/CatoTH/FCBKcomplete
+
   https://github.com/partoa/FCBKcomplete
 
 Usage
