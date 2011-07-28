@@ -40,6 +40,7 @@ Json format:
 Options
 -------
 
+ * width            - element width (by default 512px)
  * json_url         - url to fetch json object
  * cache            - use cache
  * height           - maximum number of element shown before scroll will apear
@@ -63,6 +64,9 @@ Options
 
 Changelog
 ---------
+ 
+ - 2.8.8 added "width" paramater
+
  - 2.8.7 addItem fix when value is not a string by @meltix
          new option added (filter_begin) enable filtration from begining
 

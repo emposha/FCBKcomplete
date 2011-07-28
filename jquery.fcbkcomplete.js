@@ -1,11 +1,12 @@
 /**
- FCBKcomplete v2.8.7 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ FCBKcomplete v2.8.8 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  - Jquery version required: 1.6.x
 */
 
 /* Based on TextboxList by Guillermo Rauch http://devthought.com/ */
 
 /**
+ * width            - element width (by default 512px)
  * json_url         - url to fetch json object
  * cache            - use cache
  * height           - maximum number of element shown before scroll will apear
@@ -37,7 +38,7 @@
       }
 
       function createFCBK() {
-        holder = $('<ul class="holder"></ul>');
+        holder = $('<ul class="holder"></ul>').width(options.width);
         if (options.attachto) {
           if (typeof(options.attachto) == "object") {
             options.attachto.append(holder);
@@ -47,11 +48,10 @@
         } else {
           element.after(holder);
         }
-        complete = $('<div class="facebook-auto">').append('<div class="default">' + options.complete_text + "</div>");
+        complete = $('<div class="facebook-auto">').append('<div class="default">' + options.complete_text + "</div>").width(options.width);
         complete.hover(function() {complete_hover = 0;}, function() {complete_hover = 1;});
-        feed = $('<ul id="'+elemid+'_feed"></ul>');
+        feed = $('<ul id="'+elemid+'_feed"></ul>').width(options.width);
         holder.after(complete.prepend(feed));
-        feed.css("width", complete.width());
         elPrepare();
       }
 
@@ -452,6 +452,7 @@
 
       var options = $.extend({
         json_url: null,
+        width: 512,
         cache: false,
         height: "10",
         newel: false,
