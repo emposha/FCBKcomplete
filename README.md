@@ -65,7 +65,7 @@ Options
 Changelog
 ---------
  
- - 2.8.8 added "width" paramater
+ - 2.8.8 added "width" paramater, added 109fd92, 5f4f529, ee59f2a fixes from @CatoTH fork 
 
  - 2.8.7 addItem fix when value is not a string by @meltix
          new option added (filter_begin) enable filtration from begining

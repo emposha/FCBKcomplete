@@ -48,7 +48,10 @@
         } else {
           element.after(holder);
         }
-        complete = $('<div class="facebook-auto">').append('<div class="default">' + options.complete_text + "</div>").width(options.width);
+        complete = $('<div class="facebook-auto">').width(options.width);
+        if (options.complete_text != "") {
+          complete.append('<div class="default">' + options.complete_text + "</div>");
+        }
         complete.hover(function() {complete_hover = 0;}, function() {complete_hover = 1;});
         feed = $('<ul id="'+elemid+'_feed"></ul>').width(options.width);
         holder.after(complete.prepend(feed));
@@ -63,7 +66,7 @@
           }
         }
 
-        var temp_elem = $('<'+element.get(0).tagName+' name="'+name+'" id="'+elemid+'" multiple="multiple" class="hidden">');
+        var temp_elem = $('<'+element.get(0).tagName+' name="'+name+'" id="'+elemid+'" multiple="multiple" class="' + element.get(0).className + ' hidden">');
         
         $.each(element.children('option'), function(i, option) {
           option = $(option);
@@ -159,12 +162,14 @@
         holder.append(li.append(input));
 
         input.focus( function() {
+          isactive = true;
           if (maxItems()) {
             complete.fadeIn("fast");
           }
         });
         
         input.blur( function() {
+          isactive = false;
           if (complete_hover) {
             complete.fadeOut("fast");
           } else {
@@ -226,6 +231,7 @@
                 setTimeout( function() {
                   if (getBoxTimeoutValue != getBoxTimeout) return;
                   $.getJSON(options.json_url, {"tag": xssDisplay(etext)}, function(data) {
+                    if (!isactive) return; // prevents opening the selection again after the focus is already off
                     addMembers(etext, data);
                     json_cache_object.set(etext, 1);
                     bindEvents();
@@ -481,6 +487,7 @@
       var complete = null;
       var counter = 0;
       
+      var isactive = false;
       var focuson = null;
       var deleting = 0;
       var complete_hover = 1;
