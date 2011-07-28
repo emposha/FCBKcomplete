@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+        <title>FCBKcomplete Demo</title>
+        <link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8" />
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.6.min.js" type="text/javascript" charset="utf-8">
+        </script>
+        <script src="jquery.fcbkcomplete.js" type="text/javascript" charset="utf-8">
+        </script>
+    </head>
+    <body id="test">
+        <h1>FCBKcomplete Demo</h1>
+        <div id="text">
+        </div>
+        <form action="submit.php" method="POST" accept-charset="utf-8">
+			<div id="item_group" >
+			   <select id="select3" name="select3">
+                <option value="sleep" class="selected">sleep</option>
+                <option value="sport">sport</option>
+                <option value="freestyle">freestyle</option>
+            </select>
+			 <select id="select4" name="select4">
+                <option value="sport" class="sport">sport</option>
+                <option value="sleep">sleep</option>
+                <option value="freestyle">freestyle</option>
+            </select>
+			</div>
+         
+            <br/>
+            <br/>
+            <input type="submit" value="Send">
+        </form>
+        <script type="text/javascript">
+            $(document).ready(function(){                
+                $("select").fcbkcomplete({
+                   
+                    addontab: true,                   
+                    maxitems: 2,
+                    height: 2,
+                    cache: true,
+					autopen:true,
+					filter_selected: true,
+					filter_group: '#item_group'
+                });
+            });
+        </script>
+        
+        <div id="testme"></div>
+    </body>
+</html>

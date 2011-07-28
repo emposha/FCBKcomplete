@@ -26,6 +26,8 @@
  * input_tabindex   - the tabindex of the input element
  * input_min_size   - minimum size of the input element (default: 1)
  * input_name       - value of the input element's 'name'-attribute (no 'name'-attribute set if empty)
+ * auto_open        - lmor' open on click 
+ * filter_group     - lmor' group to filterselected
  */
 
 (function( $, undefined ) {
@@ -174,8 +176,10 @@
         
         holder.click( function() {
           input.focus();
-          if (feed.length && input.val().length) {
-            feed.show();
+		   if (options.auto_open) //lmor
+              input.keyup();
+            else if (feed.length && input.val().length) {
+              feed.show();
           } else {
             feed.hide();
             complete.children(".default").show();
@@ -213,8 +217,8 @@
               }
             }
           }
-
-          if (event.keyCode != _key.downarrow && event.keyCode != _key.uparrow && event.keyCode!= _key.leftarrow && event.keyCode!= _key.rightarrow && etext.length != 0) {
+		//lmor
+          if ((options.auto_open) ||(event.keyCode != _key.downarrow && event.keyCode != _key.uparrow && event.keyCode!= _key.leftarrow && event.keyCode!= _key.rightarrow && etext.length != 0)) {
             counter = 0;
             if (options.json_url && maxItems()) {
               if (options.cache && json_cache_object.get(etext)) {
@@ -261,8 +265,8 @@
         }        
         var maximum = options.maxshownitems < cache.length() ? options.maxshownitems: cache.length();
         var content = '';
-        $.each(cache.search(etext), function (i, object) {
-          if (options.filter_selected && element.children("option[value=" + object.key + "]").hasClass("selected")) {
+        $.each(cache.search(etext), function (i, object) { //lmor added filter_group code
+         if((options.filter_selected)&& ((options.filter_group).length > 0) &&  $(options.filter_group + ' select').children("option[value=" + object.key + "]").hasClass("selected")){
             //nothing here...
           } else {
             content += '<li rel="' + object.key + '">' + xssDisplay(itemIllumination(object.value, etext)) + '</li>';
@@ -470,7 +474,9 @@
         input_tabindex: 0,
         input_min_size: 1,
         input_name: "",
-        bricket: true
+        bricket: true,
+		auto_open: true,
+		filter_group: ''
       },
       opt);
 
