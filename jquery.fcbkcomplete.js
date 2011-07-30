@@ -246,6 +246,9 @@
             feed.show();
           }
         });
+        if (options.oncreate) {
+	    options.oncreate.call(options.oncreate, input)
+	}
         if (focusme) {
           setTimeout( function() {
             input.focus();
