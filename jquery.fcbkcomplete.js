@@ -17,6 +17,7 @@
  * filter_begin     - filter only from begin
  * complete_text    - text for complete page
  * maxshownitems    - maximum numbers that will be shown at dropdown list (less better performance)
+ * oncreate         - fire event on item create
  * onselect         - fire event on item select
  * onremove         - fire event on item remove
  * maxitimes        - maximum items that can be added
@@ -246,6 +247,9 @@
             feed.show();
           }
         });
+        if (options.oncreate) {
+	    	funCall(options.oncreate, input)
+		}
         if (focusme) {
           setTimeout( function() {
             input.focus();
@@ -470,6 +474,7 @@
         complete_text: "Start to type...",
         maxshownitems: 30,
         maxitems: 10,
+        oncreate: null,
         onselect: null,
         onremove: null,
         attachto: null,
