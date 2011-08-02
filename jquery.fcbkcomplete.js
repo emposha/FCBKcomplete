@@ -248,8 +248,8 @@
           }
         });
         if (options.oncreate) {
-	    	funCall(options.oncreate, input)
-		}
+          funCall(options.oncreate, input);
+      	}
         if (focusme) {
           setTimeout( function() {
             input.focus();

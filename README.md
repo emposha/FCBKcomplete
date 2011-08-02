@@ -55,6 +55,7 @@ Options
  * maxshownitems    - maximum numbers that will be shown at dropdown list (less better performance)
  * onselect         - fire event on item select
  * onremove         - fire event on item remove
+ * oncreate         - fire event on item create
  * maxitimes        - maximum items that can be added
  * delay            - delay between ajax request (bigger delay, lower server time request)
  * addontab         - add first visible element on tab or enter hit
