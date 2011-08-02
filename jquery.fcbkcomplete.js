@@ -1,5 +1,5 @@
 /**
- FCBKcomplete v2.8.8 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ FCBKcomplete v2.8.9 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  - Jquery version required: 1.6.x
 */
 
@@ -67,11 +67,11 @@
           }
         }
 
-        var temp_elem = $('<'+element.get(0).tagName+' name="'+name+'" id="'+elemid+'" multiple="multiple" class="' + element.get(0).className + ' hidden">');
+        var temp_elem = $('<'+element.get(0).tagName+' name="'+name+'" id="'+elemid+'" multiple="multiple" class="' + element.get(0).className + ' hidden">').data('cache', {});
         
         $.each(element.children('option'), function(i, option) {
           option = $(option);
-          temp_elem.data(option.val(), option.text());
+          temp_elem.data('cache')[option.val()] =  option.text();
           if (option.hasClass("selected")) {
             var id = addItem(option.text(), option.val(), true, option.hasClass("locked"));
             temp_elem.append('<option value="'+option.val()+'" selected="selected" id="opt_'+id+'"class="selected">'+option.text()+'</option>');
@@ -500,13 +500,17 @@
       var element = $(this);
       var elemid = element.attr("id");
       
-      var json_cache = $('<div></div>').after(element);
       var json_cache_object = {
         'set': function (id, val) {
-          json_cache.data(id, val);
+          var data = element.data("jsoncache");
+          data[id] = val;
+          element.data("jsoncache", data);
         },
         'get': function(id) {
-          return json_cache.data(id);
+          return element.data("jsoncache")[id] != 'undefined' ? element.data("jsoncache")[id] : null;
+        },
+        'init' : function () {
+          element.data("jsoncache", {});
         }
       };
       
@@ -539,7 +543,7 @@
         'search': function (text, callback) {
           var temp = new Array();
           var regex = new RegExp((options.filter_begin ? '^' : '') + text, (options.filter_case ? "g": "gi"));
-          $.each(element.data(), function (i, _elem) {
+          $.each(element.data("cache"), function (i, _elem) {
             if (typeof _elem.search === 'function') {
               if (_elem.search(regex) != -1) {
                 temp.push({'key': i, 'value': _elem});
@@ -549,26 +553,33 @@
           return temp;
         },
         'set': function (id, val) {
-          element.data(id, val);
+          var data = element.data("cache");
+          data[id] = val;
+          element.data("cache", data);
         },
         'get': function(id) {
-          return element.data(id);
+          return element.data("cache")[id] != 'undefined' ? element.data("cache")[id] : null;
         },
         'clear': function() {
-          element.removeData();
+          element.data("cache", {});
         },
         'length': function() {
-          var count = 0;
-          for (var k in this) {
-            if (this.hasOwnProperty(k)) {
-              ++count;
-            }
+          return element.data("cache").length;
+        },
+        'init': function () {
+          if (element.data("cache") == 'undefined') {
+            element.data("cache", {});
           }
-          return count;
         }
       };
       
+      //initialization
       init();
+      
+      //cache initialization
+      json_cache_object.init();
+      cache.init();
+      
       return this;
     });
   };

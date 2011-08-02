@@ -67,6 +67,7 @@ Options
 
 Changelog
 ---------
+ - 2.8.9 cache mechanizm changed (ported from @CatoTH fork with minor changes), new event added "oncreate" by @jrencz
  
  - 2.8.8 added "width" paramater, added 109fd92, 5f4f529, ee59f2a fixes from @CatoTH fork 
 
