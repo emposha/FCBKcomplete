@@ -28,6 +28,7 @@
  * input_tabindex   - the tabindex of the input element
  * input_min_size   - minimum size of the input element (default: 1)
  * input_name       - value of the input element's 'name'-attribute (no 'name'-attribute set if empty)
+ * select_all_text  - text for select all link
  */
 
 (function( $, undefined ) {
@@ -51,7 +52,11 @@
         }
         complete = $('<div class="facebook-auto">').width(options.width);
         if (options.complete_text != "") {
-          complete.append('<div class="default">' + options.complete_text + "</div>");
+          var completeText = options.complete_text;
+          if(options.select_all_text){
+              completeText += '<span style="float: right;"><a href="#" id="'+elemid+'_select_all" tabindex="10000" onclick="$(\'#' + elemid + '\').trigger(\'selectAll\');return false;">' + options.select_all_text + '</a></span>';
+          }
+          complete.append('<div class="default">' + completeText +  '</div>');
         }
         complete.hover(function() {complete_hover = 0;}, function() {complete_hover = 1;});
         feed = $('<ul id="'+elemid+'_feed"></ul>').width(options.width);
@@ -101,6 +106,18 @@
           complete.remove();
           element.show();
         });
+        
+        //public method to select all items
+        $(element).bind("selectAll", function(event, data) {
+            var currVals = $(element).val()
+            $.each($(element).data('cache'), function(key, value){
+                if($.inArray(key, $(element).val()) === -1){
+                    addItem(value, key, 0, 0, 0);
+                }
+            });
+            feed.parent().hide()
+        });
+        
       }
       
       function addItem(title, value, preadded, locked, focusme) {
@@ -199,6 +216,10 @@
         });
 
         input.keyup( function(event) {
+            if(event.keyCode === _key.enter){
+                element.trigger('selectAll');
+                return false;
+            }
           var etext = xssPrevent(input.val(), 1);
           
           if (event.keyCode == _key.backspace && etext.length == 0) {
@@ -343,7 +364,6 @@
         
         maininput.unbind("keydown");
         maininput.keydown( function(event) {
-          
           if (event.keyCode != _key.backspace) {
             holder.children("li.bit-box.deleted").removeClass("deleted");
           }
@@ -472,6 +492,7 @@
         filter_selected: false,
         filter_begin: false,
         complete_text: "Start to type...",
+        select_all_text:  null,
         maxshownitems: 30,
         maxitems: 10,
         oncreate: null,
