@@ -158,7 +158,6 @@
         var input = $('<input type="text" class="maininput" size="' + options.input_min_size + '" autocomplete="off">');
         if (options.input_tabindex > 0) input.attr("tabindex", options.input_tabindex);
         if (options.input_name != "") input.attr("name", options.input_name);
-        var getBoxTimeout = 0;
 
         holder.append(li.append(input));
 
@@ -179,8 +178,11 @@
         });
         
         holder.click( function() {
+          if (options.input_min_size < 0 && feed.length){
+            load_feed(xssPrevent(input.val(), 1))
+          }
           input.focus();
-          if (feed.length && input.val().length) {
+          if (feed.length && input.val().length > options.input_min_size) {
             feed.show();
           } else {
             feed.hide();
@@ -220,36 +222,15 @@
             }
           }
 
-          if (event.keyCode != _key.downarrow && event.keyCode != _key.uparrow && event.keyCode!= _key.leftarrow && event.keyCode!= _key.rightarrow && etext.length != 0) {
-            counter = 0;
-            if (options.json_url && maxItems()) {
-              if (options.cache && json_cache_object.get(etext)) {
-                addMembers(etext);
-                bindEvents();
-              } else {
-                getBoxTimeout++;
-                var getBoxTimeoutValue = getBoxTimeout;
-                setTimeout( function() {
-                  if (getBoxTimeoutValue != getBoxTimeout) return;
-                  $.getJSON(options.json_url, {"tag": xssDisplay(etext)}, function(data) {
-                    if (!isactive) return; // prevents opening the selection again after the focus is already off
-                    addMembers(etext, data);
-                    json_cache_object.set(etext, 1);
-                    bindEvents();
-                  });
-                }, options.delay);
-              }
-            } else {
-              addMembers(etext);
-              bindEvents();
-            }
+          if (event.keyCode != _key.downarrow && event.keyCode != _key.uparrow && event.keyCode!= _key.leftarrow && event.keyCode!= _key.rightarrow && etext.length > options.input_min_size) {
+            load_feed(etext);
             complete.children(".default").hide();
             feed.show();
           }
         });
         if (options.oncreate) {
           funCall(options.oncreate, input);
-      	}
+        }
         if (focusme) {
           setTimeout( function() {
             input.focus();
@@ -268,7 +249,7 @@
           $.each(data, function(i, val) {
             cache.set(xssPrevent(val.key), xssPrevent(val.value));
           });
-        }        
+        }
         var maximum = options.maxshownitems < cache.length() ? options.maxshownitems: cache.length();
         var content = '';
         $.each(cache.search(etext), function (i, object) {
@@ -279,7 +260,7 @@
             counter++;
             maximum--;
           }
-        });        
+        });
         feed.append(content);
         if (options.firstselected) {
           focuson = feed.children("li:visible:first");
@@ -370,7 +351,7 @@
 
           if (event.keyCode == _key.downarrow) {
             nextItem('first');
-          }          
+          }
           if (event.keyCode == _key.uparrow) {
             nextItem('last');
           }
@@ -440,8 +421,8 @@
         if (typeof flag != "undefined") {
           for(i = 0; i < string.length; i++) {
             var charcode = string.charCodeAt(i);
-            if ((_key.exclamation <= charcode && charcode <= _key.slash) || 
-                (_key.colon <= charcode && charcode <= _key.at) || 
+            if ((_key.exclamation <= charcode && charcode <= _key.slash) ||
+                (_key.colon <= charcode && charcode <= _key.at) ||
                 (_key.squarebricket_left <= charcode && charcode <= _key.apostrof)) {
               string = string.replace(string[i], escape(string[i]));
             }
@@ -458,6 +439,31 @@
           return string;
         }
         return unescape(string);
+      }
+
+      function load_feed(etext){
+        counter = 0;
+        if (options.json_url && maxItems()) {
+          if (options.cache && json_cache_object.get(etext)) {
+            addMembers(etext);
+            bindEvents();
+          } else {
+            getBoxTimeout++;
+            var getBoxTimeoutValue = getBoxTimeout;
+            setTimeout( function() {
+              if (getBoxTimeoutValue != getBoxTimeout) return;
+              $.getJSON(options.json_url, {"tag": xssDisplay(etext)}, function(data) {
+                if (!isactive) return; // prevents opening the selection again after the focus is already off
+                addMembers(etext, data);
+                json_cache_object.set(etext, 1);
+                bindEvents();
+              });
+            }, options.delay);
+          }
+        } else {
+          addMembers(etext);
+          bindEvents();
+        }
       }
 
       var options = $.extend({
@@ -499,6 +505,7 @@
 
       var element = $(this);
       var elemid = element.attr("id");
+      var getBoxTimeout = 0;
       
       var json_cache_object = {
         'set': function (id, val) {
