@@ -1,5 +1,5 @@
 /**
- FCBKcomplete v2.8.9 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ FCBKcomplete v2.8.9.1 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  - Jquery version required: 1.6.x
 */
 
@@ -53,10 +53,10 @@
         complete = $('<div class="facebook-auto">').width(options.width);
         if (options.complete_text != "") {
           var completeText = options.complete_text;
-          if(options.select_all_text){
-              completeText += '<span style="float: right;"><a href="#" id="'+elemid+'_select_all" tabindex="10000" onclick="$(\'#' + elemid + '\').trigger(\'selectAll\');return false;">' + options.select_all_text + '</a></span>';
-          }
           complete.append('<div class="default">' + completeText +  '</div>');
+          if (options.select_all_text) {
+            complete.children('.default').append($('<a href="" class="select_all_items">' + options.select_all_text + '</a>').click(function(){$(element).trigger('selectAll'); return false;}));
+          }
         }
         complete.hover(function() {complete_hover = 0;}, function() {complete_hover = 1;});
         feed = $('<ul id="'+elemid+'_feed"></ul>').width(options.width);
@@ -109,7 +109,7 @@
         
         //public method to select all items
         $(element).bind("selectAll", function(event, data) {
-            var currVals = $(element).val()
+            var currVals = $(element).val();
             $.each($(element).data('cache'), function(key, value){
                 if($.inArray(key, $(element).val()) === -1){
                     addItem(value, key, 0, 0, 0);
@@ -195,8 +195,8 @@
         });
         
         holder.click( function() {
-          if (options.input_min_size < 0 && feed.length){
-            load_feed(xssPrevent(input.val(), 1))
+          if (options.input_min_size < 0 && feed.length) {
+            load_feed(xssPrevent(input.val(), 1));
           }
           input.focus();
           if (feed.length && input.val().length > options.input_min_size) {

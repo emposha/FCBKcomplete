@@ -15,8 +15,6 @@ FCBKcomplete forks
 ------------------
   https://github.com/CatoTH/FCBKcomplete
 
-  https://github.com/partoa/FCBKcomplete
-
 Usage
 -----
 To activate FCBKcomplete:
@@ -64,9 +62,12 @@ Options
  * input_tabindex   - the tabindex of the input element
  * input_min_size   - minimum size of the input element (default: 1)
  * input_name       - value of the input element's 'name'-attribute (no 'name'-attribute set if empty)
+ * select_all_text  - text for select all link
 
 Changelog
 ---------
+ - 2.8.9.1 new options added input_min_size, select_all_text. The input_min_size added by  @meteozond and @Александр, and select_all_text option added by @musketyr.
+
  - 2.8.9 cache mechanizm changed (ported from @CatoTH fork with minor changes), new event added "oncreate" by @jrencz
  
  - 2.8.8 added "width" paramater, added 109fd92, 5f4f529, ee59f2a fixes from @CatoTH fork 
