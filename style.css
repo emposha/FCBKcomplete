@@ -24,6 +24,7 @@ ul.holder li.bit-box-focus a.closebutton, ul.holder li.bit-box-focus a.closebutt
 /* Autocompleter */
 
 .facebook-auto { display: none; position: absolute; background: #eee; z-index:1001;}
+.facebook-auto .select_all_items {display: block; float: right;}
 .facebook-auto .default { padding: 5px 7px; border: 1px solid #ccc; border-width: 0 1px 1px;font-family:"Lucida Grande","Verdana"; font-size:11px; }
 .facebook-auto ul { display: none; margin: 0; padding: 0; overflow: auto; position:absolute; z-index:9999}
 .facebook-auto ul li { padding: 5px 12px; z-index: 1000; cursor: pointer; margin: 0; list-style-type: none; border: 1px solid #ccc; border-width: 0 1px 1px; font: 11px "Lucida Grande", "Verdana"; background-color: #eee }
