@@ -66,7 +66,7 @@ Options
 
 Changelog
 ---------
- - 2.8.9.1 new options added input_min_size, select_all_text. The input_min_size added by  @meteozond and @Александр, and select_all_text option added by @musketyr.
+ - 2.8.9.1 new options added input_min_size, select_all_text. The input_min_size added by  @meteozond and @Александр, and select_all_text option added by @musketyr. feed clear fix added
 
  - 2.8.9 cache mechanizm changed (ported from @CatoTH fork with minor changes), new event added "oncreate" by @jrencz
  
