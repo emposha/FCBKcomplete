@@ -218,10 +218,7 @@
         });
 
         input.keyup( function(event) {
-            if(event.keyCode === _key.enter){
-                element.trigger('selectAll');
-                return false;
-            }
+
           var etext = xssPrevent(input.val(), 1);
           
           if (event.keyCode == _key.backspace && etext.length == 0) {
