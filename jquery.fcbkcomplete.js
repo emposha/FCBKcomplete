@@ -272,7 +272,7 @@
         var maximum = options.maxshownitems < cache.length() ? options.maxshownitems: cache.length();
         var content = '';
         $.each(cache.search(etext), function (i, object) {
-          if (options.filter_selected && element.children("option[value=" + object.key + "]").hasClass("selected")) {
+          if (options.filter_selected && element.children('option[value="' + object.key + '"]').hasClass("selected")) {
             //nothing here...
           } else {
             content += '<li rel="' + object.key + '">' + xssDisplay(itemIllumination(object.value, etext)) + '</li>';
