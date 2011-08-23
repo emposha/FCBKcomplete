@@ -518,7 +518,8 @@
         input_tabindex: 0,
         input_min_size: 1,
         input_name: "",
-        bricket: true
+        bricket: true,
+        filter_group: ''
       },
       opt);
 
