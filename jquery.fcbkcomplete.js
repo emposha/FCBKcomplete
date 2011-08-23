@@ -29,7 +29,7 @@
  * input_min_size   - minimum size of the input element (default: 1)
  * input_name       - value of the input element's 'name'-attribute (no 'name'-attribute set if empty)
  * select_all_text  - text for select all link
- * filter_group     - lmor' if item is already selected in one of the selects in the group it is filtered out, extension of filter_selected
+ * filter_group     - lmor'  if item is already selected in one of the selects in the group it is filtered out, extension of filter_selected
  */
 
 (function( $, undefined ) {
@@ -275,13 +275,13 @@
           if (options.filter_selected && element.children("option[value=" + object.key + "]").hasClass("selected")) {
             //nothing here...
           } else {
-              if((options.filter_group).length > 0 &&  $(options.filter_group + ' select').children("option[value=" + object.key + "]").hasClass("selected")){ //lmor' filter_group  group to filterselected
+           if((options.filter_group).length > 0 &&  $(options.filter_group + ' select').children("option[value=" + object.key + "]").hasClass("selected")){ //lmor' filter_group  group to filterselected
                         //nothing here...
                         } else {
             content += '<li rel="' + object.key + '">' + xssDisplay(itemIllumination(object.value, etext)) + '</li>';
             counter++;
             maximum--;
-                        }
+          }
           }
         });
         feed.append(content);
@@ -519,7 +519,7 @@
         input_min_size: 1,
         input_name: "",
         bricket: true,
-        filter_group: ''
+         filter_group: ''
       },
       opt);
 
