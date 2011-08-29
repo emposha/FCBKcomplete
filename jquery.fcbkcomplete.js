@@ -109,9 +109,9 @@
         
         //public method to select all items
         $(element).bind("selectAll", function(event, data) {
-            var currVals = $(element).val();
+            var currVals = $(element).val() || [];
             $.each($(element).data('cache'), function(key, value){
-                if($.inArray(key, $(element).val()) === -1){
+                if($.inArray(key, currVals) === -1){
                     addItem(value, key, 0, 0, 0);
                 }
             });
