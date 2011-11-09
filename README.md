@@ -13,7 +13,7 @@ Jquery version required: 1.6.x
 
 FCBKcomplete forks
 ------------------
-  https://github.com/CatoTH/FCBKcomplete
+  https://github.com/partoa/FCBKcomplete
 
 Usage
 -----
@@ -40,7 +40,6 @@ Json format:
 Options
 -------
 
- * width            - element width (by default 512px)
  * json_url         - url to fetch json object
  * cache            - use cache
  * height           - maximum number of element shown before scroll will apear
@@ -53,7 +52,6 @@ Options
  * maxshownitems    - maximum numbers that will be shown at dropdown list (less better performance)
  * onselect         - fire event on item select
  * onremove         - fire event on item remove
- * oncreate         - fire event on item create
  * maxitimes        - maximum items that can be added
  * delay            - delay between ajax request (bigger delay, lower server time request)
  * addontab         - add first visible element on tab or enter hit
@@ -62,16 +60,9 @@ Options
  * input_tabindex   - the tabindex of the input element
  * input_min_size   - minimum size of the input element (default: 1)
  * input_name       - value of the input element's 'name'-attribute (no 'name'-attribute set if empty)
- * select_all_text  - text for select all link
 
 Changelog
 ---------
- - 2.8.9.1 new options added input_min_size, select_all_text. The input_min_size added by  @meteozond and @Александр, and select_all_text option added by @musketyr. feed clear fix added
-
- - 2.8.9 cache mechanizm changed (ported from @CatoTH fork with minor changes), new event added "oncreate" by @jrencz
- 
- - 2.8.8 added "width" paramater, added 109fd92, 5f4f529, ee59f2a fixes from @CatoTH fork 
-
  - 2.8.7 addItem fix when value is not a string by @meltix
          new option added (filter_begin) enable filtration from begining
 
