@@ -23,6 +23,7 @@
  * maxitimes        - maximum items that can be added
  * delay            - delay between ajax request (bigger delay, lower server time request)
  * addontab         - add first visible element on tab or enter hit
+ * addoncomma       - add first visible element when pressing the comma key
  * attachto         - after this element fcbkcomplete insert own elements
  * bricket          - use square bricket with select (needed for asp or php) enabled by default
  * input_tabindex   - the tabindex of the input element
@@ -271,7 +272,7 @@
         var maximum = options.maxshownitems < cache.length() ? options.maxshownitems: cache.length();
         var content = '';
         $.each(cache.search(etext), function (i, object) {
-          if (options.filter_selected && element.children("option[value=" + object.key + "]").hasClass("selected")) {
+          if (options.filter_selected && element.children('option[value="' + object.key + '"]').hasClass("selected")) {
             //nothing here...
           } else {
             content += '<li rel="' + object.key + '">' + xssDisplay(itemIllumination(object.value, etext)) + '</li>';
@@ -346,19 +347,19 @@
             holder.children("li.bit-box.deleted").removeClass("deleted");
           }
 
-          if ((event.keyCode == _key.enter || event.keyCode == _key.tab) && checkFocusOn()) {
+          if ((event.keyCode == _key.enter || event.keyCode == _key.tab || event.keyCode == _key.comma) && checkFocusOn()) {
             var option = focuson;
             addItem(option.text(), option.attr("rel"), 0, 0, 1);
             return _preventDefault(event);
           }
 
-          if ((event.keyCode == _key.enter || event.keyCode == _key.tab) && !checkFocusOn()) {
+          if ((event.keyCode == _key.enter || event.keyCode == _key.tab || event.keyCode == _key.comma) && !checkFocusOn()) {
             if (options.newel) {
               var value = xssPrevent($(this).val());
               addItem(value, value, 0, 0, 1);
               return _preventDefault(event);
             }
-            if (options.addontab && options.newel) {
+            if ((options.addontab || options.addoncomma) && options.newel) {
               focuson = feed.children("li:visible:first");
               var option = focuson;
               addItem(option.text(), option.attr("rel"), 0, 0, 1);
@@ -497,6 +498,7 @@
         height: "10",
         newel: false,
         addontab: false,
+        addoncomma: false,
         firstselected: false,
         filter_case: false,
         filter_selected: false,
@@ -548,6 +550,7 @@
       
       var _key = { 'enter': 13,
                    'tab': 9,
+                   'comma': 188,
                    'backspace': 8,
                    'leftarrow': 37,
                    'uparrow': 38,
