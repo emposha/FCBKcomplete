@@ -57,6 +57,7 @@ Options
  * maxitimes        - maximum items that can be added
  * delay            - delay between ajax request (bigger delay, lower server time request)
  * addontab         - add first visible element on tab or enter hit
+ * addoncomma       - add first visible element when pressing the comma key
  * attachto         - after this element fcbkcomplete insert own elements
  * bricket          - use square bricket with select (needed for asp or php) enabled by default
  * input_tabindex   - the tabindex of the input element
@@ -66,6 +67,8 @@ Options
 
 Changelog
 ---------
+ - 2.8.9.2 Merge pull request #94 from mysmallidea, Merge pull request #98 from musketyr, firefox undefined name fixed (by xavierp)
+
  - 2.8.9.1 new options added input_min_size, select_all_text. The input_min_size added by  @meteozond and @Александр, and select_all_text option added by @musketyr. feed clear fix added
 
  - 2.8.9 cache mechanizm changed (ported from @CatoTH fork with minor changes), new event added "oncreate" by @jrencz

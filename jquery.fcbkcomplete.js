@@ -1,5 +1,5 @@
 /**
- FCBKcomplete v2.8.9.1 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ FCBKcomplete v2.8.9.2 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  - Jquery version required: 1.6.x
 */
 
@@ -68,7 +68,7 @@
       function elPrepare() {
         name = element.attr("name");
         if (options.bricket) {
-          if (name.indexOf("[]") == -1) {
+          if (typeof(name) != 'undefined' && name.indexOf("[]") == -1) {
             name = name + "[]";
           }
         }
