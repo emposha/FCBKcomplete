@@ -1,5 +1,5 @@
 /**
- FCBKcomplete v2.8.9.2 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ FCBKcomplete v2.8.9.3 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  - Jquery version required: 1.6.x
 */
 
@@ -213,9 +213,8 @@
             return false;
           }
           //auto expand input
-          var newsize = input.val().length + 1;
-          if (options.input_min_size > newsize) newsize = options.input_min_size;
-          input.attr("size", newsize);
+          var newsize = (options.input_min_size > input.val().length) ? options.input_min_size : (input.val().length + 1);
+          input.attr("size", newsize).width(parseInt(input.css('font-size')) * newsize);
         });
 
         input.keyup( function(event) {
