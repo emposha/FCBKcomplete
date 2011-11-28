@@ -67,6 +67,8 @@ Options
 
 Changelog
 ---------
+ - 2.8.9.3 input auto expand fixed, font-size dependency added
+
  - 2.8.9.2 Merge pull request #94 from mysmallidea, Merge pull request #98 from musketyr, firefox undefined name fixed (by xavierp)
 
  - 2.8.9.1 new options added input_min_size, select_all_text. The input_min_size added by  @meteozond and @Александр, and select_all_text option added by @musketyr. feed clear fix added
