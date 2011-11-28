@@ -272,12 +272,14 @@
         var maximum = options.maxshownitems < cache.length() ? options.maxshownitems: cache.length();
         var content = '';
         $.each(cache.search(etext), function (i, object) {
-          if (options.filter_selected && element.children('option[value="' + object.key + '"]').hasClass("selected")) {
-            //nothing here...
-          } else {
-            content += '<li rel="' + object.key + '">' + xssDisplay(itemIllumination(object.value, etext)) + '</li>';
-            counter++;
-            maximum--;
+          if (maximum) {
+            if (options.filter_selected && element.children('option[value="' + object.key + '"]').hasClass("selected")) {
+              //nothing here...
+            } else {
+              content += '<li rel="' + object.key + '">' + xssDisplay(itemIllumination(object.value, etext)) + '</li>';
+              counter++;
+              maximum--;
+            }
           }
         });
         feed.append(content);
@@ -599,7 +601,15 @@
           element.data("cache", {});
         },
         'length': function() {
-          return element.data("cache").length;
+          if ( typeof(element.data('cache')) == "object") {
+            var _length = 0;
+            for (i in element.data('cache')) {
+              _length++;
+            }
+            return _length;
+          } else {
+            return element.data("cache").length;
+          }
         },
         'init': function () {
           if (element.data("cache") == 'undefined') {
