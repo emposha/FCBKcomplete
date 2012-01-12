@@ -479,17 +479,17 @@
             setTimeout( function() {
               if (getBoxTimeoutValue != getBoxTimeout) return;
               $.ajax({ url: options.json_url, data: { "tag": xssDisplay(etext) }, dataType: "jsonp",
-         							success: function(data) {
-        									if (!isactive) return; // prevents opening the selection again after the focus is already off
-        									addMembers(etext, data.data);
-        									json_cache_object.set(etext, 1);
-        									bindEvents();
-        								},
-        								error: function(jqXHR, textStatus, errorThrown) {
-        									alert("error " + textStatus + "\n" +
-        										"incoming Text " + jqXHR.responseText);
-        								}
-        							});
+                success: function(data) {
+                  if (!isactive) return; // prevents opening the selection again after the focus is already off
+                  addMembers(etext, data.data);
+                  json_cache_object.set(etext, 1);
+                  bindEvents();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                  alert("error " + textStatus + "\n" +
+                  "incoming Text " + jqXHR.responseText);
+                }
+              });
             }, options.delay);
           }
         } else {
