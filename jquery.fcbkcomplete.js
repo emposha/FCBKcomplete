@@ -78,7 +78,7 @@
         $.each(element.children('option'), function(i, option) {
           option = $(option);
           temp_elem.data('cache')[option.val()] =  option.text();
-          if (option.hasClass("selected")) {
+          if (option.hasClass("selected") || option.attr("selected")) {
             var id = addItem(option.text(), option.val(), true, option.hasClass("locked"));
             temp_elem.append('<option value="'+option.val()+'" selected="selected" id="opt_'+id+'"class="selected">'+option.text()+'</option>');
           }
