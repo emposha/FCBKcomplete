@@ -30,6 +30,7 @@
  * input_min_size   - minimum size of the input element (default: 1)
  * input_name       - value of the input element's 'name'-attribute (no 'name'-attribute set if empty)
  * select_all_text  - text for select all link
+ * show_values      - show values instead of titles (default: false)
  */
 
 (function( $, undefined ) {
@@ -74,7 +75,7 @@
         }
 
         var temp_elem = $('<'+element.get(0).tagName+' name="'+name+'" id="'+elemid+'" multiple="multiple" class="' + element.get(0).className + ' hidden">').data('cache', {});
-        
+
         $.each(element.children('option'), function(i, option) {
           option = $(option);
           temp_elem.data('cache')[option.val()] =  option.text();
@@ -83,16 +84,16 @@
             temp_elem.append('<option value="'+option.val()+'" selected="selected" id="opt_'+id+'"class="selected">'+option.text()+'</option>');
           }
         });
-        
+
         element.after(temp_elem);
         element.remove();
         element = temp_elem;
-        
+
         //public method to add new item
         $(element).bind("addItem", function(event, data) {
           addItem(data.title, data.value, 0, 0, 0);
         });
-        
+
         //public method to remove item
         $(element).bind("removeItem", function(event, data) {
           var item = holder.children('li[rel=' + data.value + ']');
@@ -100,14 +101,14 @@
             removeItem(item);
           }
         });
-        
+
         //public method to remove item
         $(element).bind("destroy", function(event, data) {
           holder.remove();
           complete.remove();
           element.show();
         });
-        
+
         //public method to select all items
         $(element).bind("selectAll", function(event, data) {
             var currVals = $(element).val() || [];
@@ -118,16 +119,16 @@
             });
             feed.parent().hide()
         });
-        
+
       }
-      
+
       function addItem(title, value, preadded, locked, focusme) {
         if (!maxItems()) {
           return false;
         }
         var liclass = "bit-box" + (locked ? " locked": "");
         var id = randomId();
-        var txt = document.createTextNode(xssDisplay(title));
+        var txt = document.createTextNode(options.show_values ? xssDisplay(value) : xssDisplay(title));
         var aclose = $('<a class="closebutton" href="#"></a>');
         var li = $('<li class="'+liclass+'" rel="'+value+'" id="pt_'+id+'"></li>').prepend(txt).append(aclose);
 
@@ -185,7 +186,7 @@
             complete.fadeIn("fast");
           }
         });
-        
+
         input.blur( function() {
           isactive = false;
           if (complete_hover) {
@@ -194,7 +195,7 @@
             input.focus();
           }
         });
-        
+
         holder.click( function() {
           if (options.input_min_size < 0 && feed.length) {
             load_feed(xssPrevent(input.val(), 1));
@@ -207,7 +208,7 @@
             complete.children(".default").show();
           }
         });
-        
+
         input.keypress( function(event) {
           if (event.keyCode == _key.enter) {
             return false;
@@ -220,7 +221,7 @@
         input.keyup( function(event) {
 
           var etext = xssPrevent(input.val(), 1);
-          
+
           if (event.keyCode == _key.backspace && etext.length == 0) {
             clear_feed(1);
             if (!holder.children("li.bit-box:last").hasClass('locked')) {
@@ -286,7 +287,7 @@
           focuson = feed.children("li:visible:first");
           focuson.addClass("auto-focus");
         }
-        
+
         if (counter > options.height) {
           feed.css({
             "height": (options.height * 24) + "px",
@@ -295,7 +296,7 @@
         } else {
           feed.css("height", "auto");
         }
-        
+
         if (maxItems() && complete.is(':hidden')) {
           complete.show();
         }
@@ -334,14 +335,14 @@
       function bindEvents() {
         var maininput = $("#" + elemid + "_annoninput").children(".maininput");
         bindFeedEvent();
-        
+
         feed.children("li").unbind("mousedown").mousedown( function() {
           var option = $(this);
           addItem(option.text(), option.attr("rel"), 0, 0, 1);
           clear_feed(1);
           complete.hide();
         });
-        
+
         maininput.unbind("keydown");
         maininput.keydown( function(event) {
           if (event.keyCode != _key.backspace) {
@@ -376,7 +377,7 @@
           }
         });
       }
-      
+
       function nextItem(position) {
         removeFeedEvent();
         if (focuson == null || focuson.length == 0) {
@@ -394,7 +395,7 @@
         feed.children("li").removeClass("auto-focus");
         focuson.addClass("auto-focus");
       }
-      
+
       function _preventDefault(event) {
         complete.hide();
         event.preventDefault();
@@ -435,7 +436,7 @@
         }
         return true;
       }
-      
+
       function xssPrevent(string, flag) {
         if (typeof flag != "undefined") {
           for(i = 0; i < string.length; i++) {
@@ -450,7 +451,7 @@
         }
         return string.replace(/script(.*)/g, "");
       }
-      
+
       function xssDisplay(string, flag) {
         string = string.toString();
         string = string.replace('\\', "");
@@ -459,7 +460,7 @@
         }
         return unescape(string);
       }
-      
+
       function clear_feed(flag) {
         feed.children().remove();
         if (flag) {
@@ -516,7 +517,8 @@
         input_tabindex: 0,
         input_min_size: 1,
         input_name: "",
-        bricket: true
+        bricket: true,
+				show_values: false
       },
       opt);
 
@@ -525,7 +527,7 @@
       var feed = null;
       var complete = null;
       var counter = 0;
-      
+
       var isactive = false;
       var focuson = null;
       var deleting = 0;
@@ -534,7 +536,7 @@
       var element = $(this);
       var elemid = element.attr("id");
       var getBoxTimeout = 0;
-      
+
       var json_cache_object = {
         'set': function (id, val) {
           var data = element.data("jsoncache");
@@ -548,7 +550,7 @@
           element.data("jsoncache", {});
         }
       };
-      
+
       var _key = { 'enter': 13,
                    'tab': 9,
                    'comma': 188,
@@ -564,7 +566,7 @@
                    'squarebricket_left': 91,
                    'apostrof': 96
                  };
-      
+
       var randomId = function() {
         var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
         var randomstring = '';
@@ -574,7 +576,7 @@
         }
         return randomstring;
       };
-      
+
       var cache = {
         'search': function (text, callback) {
           var temp = new Array();
@@ -616,14 +618,14 @@
           }
         }
       };
-      
+
       //initialization
       init();
-      
+
       //cache initialization
       json_cache_object.init();
       cache.init();
-      
+
       return this;
     });
   };
