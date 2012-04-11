@@ -1,5 +1,5 @@
 /**
- FCBKcomplete v2.8.9.3 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ FCBKcomplete v2.8.9.3.a1 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  - Jquery version required: 1.6.x
 */
 

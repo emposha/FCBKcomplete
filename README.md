@@ -64,9 +64,12 @@ Options
  * input_min_size   - minimum size of the input element (default: 1)
  * input_name       - value of the input element's 'name'-attribute (no 'name'-attribute set if empty)
  * select_all_text  - text for select all link
+ * show_values      - show values instead of titles (default: false)
 
 Changelog
 ---------
+ - 2.8.9.3.a1 added show_values option
+
  - 2.8.9.3 input auto expand fixed, font-size dependency added
 
  - 2.8.9.2 Merge pull request #94 from mysmallidea, Merge pull request #98 from musketyr, firefox undefined name fixed (by xavierp)
@@ -74,8 +77,8 @@ Changelog
  - 2.8.9.1 new options added input_min_size, select_all_text. The input_min_size added by  @meteozond and @Александр, and select_all_text option added by @musketyr. feed clear fix added
 
  - 2.8.9 cache mechanizm changed (ported from @CatoTH fork with minor changes), new event added "oncreate" by @jrencz
- 
- - 2.8.8 added "width" paramater, added 109fd92, 5f4f529, ee59f2a fixes from @CatoTH fork 
+
+ - 2.8.8 added "width" paramater, added 109fd92, 5f4f529, ee59f2a fixes from @CatoTH fork
 
  - 2.8.7 addItem fix when value is not a string by @meltix
          new option added (filter_begin) enable filtration from begining
@@ -89,18 +92,18 @@ Changelog
  - 2.8.5 cache object fix (case sensitive) by @ketwaroo
 
  - 2.8.4 cache object fix by @tedberg
-  
+
  - 2.8.3 no more eval use
   public function addItem and removeItem fix (thanks to Yaron)
-  
+
  - 2.8.2  json_cache bug fix
   new option added "bricket"
   newel bug fix thanks to Matt
- 
+
  - 2.8.1  some minor bug fixes
   added selected attribute to preselected option thanks to @musketyr
   fixed cache entry with space thanks to Matt
-  
+
  - 2.8.0  bug fixes
  added jquery 1.6 support please note that old versions of jquery not supported
  cache mechanizm updated
@@ -113,7 +116,7 @@ Changelog
  addItem minor fix
 
  - 2.7.3 event call fixed thanks to William Parry <williamparry!at!gmail.com>
- 
+
  - 2.7.2 some minor bug fixed
  minified version recompacted due some problems
 
