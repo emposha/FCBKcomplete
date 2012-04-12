@@ -31,6 +31,7 @@
  * input_name       - value of the input element's 'name'-attribute (no 'name'-attribute set if empty)
  * select_all_text  - text for select all link
  * show_values      - show values instead of titles (default: false)
+ * onchange         - fire event on value change
  */
 
 (function( $, undefined ) {
@@ -92,6 +93,10 @@
         //public method to add new item
         $(element).bind("addItem", function(event, data) {
           addItem(data.title, data.value, 0, 0, 0);
+        });
+
+        $(element).bind("change", function(event, data) {
+          if(options.onchange) options.onchange.call(options.onchange);
         });
 
         //public method to remove item
@@ -518,7 +523,8 @@
         input_min_size: 1,
         input_name: "",
         bricket: true,
-				show_values: false
+        show_values: false,
+        onchange: null
       },
       opt);
 

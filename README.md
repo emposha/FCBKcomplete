@@ -65,9 +65,12 @@ Options
  * input_name       - value of the input element's 'name'-attribute (no 'name'-attribute set if empty)
  * select_all_text  - text for select all link
  * show_values      - show values instead of titles (default: false)
+ * onchange         - fire event on value change
 
 Changelog
 ---------
+ - 2.8.9.3.a2 added onchange event to fire after changes to SELECT
+
  - 2.8.9.3.a1 added show_values option
 
  - 2.8.9.3 input auto expand fixed, font-size dependency added
