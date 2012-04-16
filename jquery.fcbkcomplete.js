@@ -1,5 +1,5 @@
 /**
- FCBKcomplete v2.8.9.3.a1 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ FCBKcomplete v2.8.9.3.a3 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  - Jquery version required: 1.6.x
 */
 
@@ -32,6 +32,7 @@
  * select_all_text  - text for select all link
  * show_values      - show values instead of titles (default: false)
  * onchange         - fire event on value change
+ * search_mode      - where to search on text input (default: titles, possible values: titles, values, all)
  */
 
 (function( $, undefined ) {
@@ -246,7 +247,7 @@
             }
           }
 
-          if (event.keyCode != _key.downarrow && event.keyCode != _key.uparrow && event.keyCode!= _key.leftarrow && event.keyCode!= _key.rightarrow && etext.length > options.input_min_size) {
+          if (event.keyCode != _key.downarrow && event.keyCode != _key.uparrow && event.keyCode!= _key.leftarrow && event.keyCode!= _key.rightarrow && etext.length >= options.input_min_size) {
             load_feed(etext);
             complete.children(".default").hide();
             feed.show();
@@ -524,7 +525,8 @@
         input_name: "",
         bricket: true,
         show_values: false,
-        onchange: null
+        onchange: null,
+        search_mode: 'titles'
       },
       opt);
 
@@ -587,12 +589,24 @@
         'search': function (text, callback) {
           var temp = new Array();
           var regex = new RegExp((options.filter_begin ? '^' : '') + text, (options.filter_case ? "g": "gi"));
+          var ok
           $.each(element.data("cache"), function (i, _elem) {
-            if (typeof _elem.search === 'function') {
-              if (_elem.search(regex) != -1) {
-                temp.push({'key': i, 'value': _elem});
+              ok = false
+              switch(options.search_mode) {
+                  case 'titles':
+                      if(typeof _elem.search === 'function' && _elem.search(regex) != -1) ok = true
+                      break
+                  case 'values':
+                      if(typeof i.search === 'function' && i.search(regex) != -1) ok = true
+                      break
+                  case 'all':
+                      if(typeof _elem.search === 'function' && _elem.search(regex) != -1)
+                          ok = true
+                      else if(typeof i.search === 'function' && i.search(regex) != -1)
+                          ok = true
+                      break
               }
-            }
+              if(ok) temp.push({'key': i, 'value': _elem})
           });
           return temp;
         },

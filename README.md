@@ -66,9 +66,12 @@ Options
  * select_all_text  - text for select all link
  * show_values      - show values instead of titles (default: false)
  * onchange         - fire event on value change
+ * search_mode      - where to search on text input (default: titles, possible values: titles, values, all)
 
 Changelog
 ---------
+ - 2.8.9.3.a3 added search_mode option
+
  - 2.8.9.3.a2 added onchange event to fire after changes to SELECT
 
  - 2.8.9.3.a1 added show_values option
