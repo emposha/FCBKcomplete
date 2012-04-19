@@ -70,6 +70,8 @@ Options
 
 Changelog
 ---------
+ - 2.8.9.3.a4 fixed highlighting
+
  - 2.8.9.3.a3 added search_mode option
 
  - 2.8.9.3.a2 added onchange event to fire after changes to SELECT

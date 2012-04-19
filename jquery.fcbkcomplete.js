@@ -1,5 +1,5 @@
 /**
- FCBKcomplete v2.8.9.3.a3 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
+ FCBKcomplete v2.8.9.3.a4 is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  - Jquery version required: 1.6.x
 */
 
@@ -309,9 +309,8 @@
       }
 
       function itemIllumination(text, etext) {
-        var string_regex_adder = options.filter_begin ? '': '(.*)';
-        var regex_result = options.filter_begin ? '<em>$1</em>$2' : '$1<em>$2</em>$3';
-        var string_regex = string_regex_adder + (options.filter_case ? "(" + etext + ")(.*)" : "(" + etext.toLowerCase() + ")(.*)");
+        var regex_result = '<em>$1</em>$2';
+        var string_regex = (options.filter_case ? "(" + etext + ")(.*)" : "(" + etext.toLowerCase() + ")(.*)");
         try {
           var regex = new RegExp(string_regex, ((options.filter_case) ? "g":"gi"));
           var text = text.replace(regex, regex_result);
