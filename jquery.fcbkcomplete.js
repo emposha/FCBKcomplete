@@ -478,7 +478,15 @@
             var getBoxTimeoutValue = getBoxTimeout;
             setTimeout( function() {
               if (getBoxTimeoutValue != getBoxTimeout) return;
-              $.getJSON(options.json_url, {options.json_tag: xssDisplay(etext)}, function(data) {
+              
+              if (typeof(options.additional_params) == "function") {
+				  datadir = options.additional_params()
+				}
+			  else{
+              		datadir = options.additional_params()
+              } 
+              datadir[options.json_tag] = xssDisplay(etext)
+              $.getJSON(options.json_url, datadir, function(data) {
                 if (!isactive) return; // prevents opening the selection again after the focus is already off
                 addMembers(etext, data);
                 json_cache_object.set(etext, 1);
@@ -495,6 +503,7 @@
       var options = $.extend({
         json_url: null,
         json_tag: "tag",
+        additional_params: {},
         width: 512,
         cache: false,
         height: "10",
