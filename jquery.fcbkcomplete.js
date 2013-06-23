@@ -20,7 +20,7 @@
  * oncreate         - fire event on item create
  * onselect         - fire event on item select
  * onremove         - fire event on item remove
- * maxitimes        - maximum items that can be added
+ * maxitems        - maximum items that can be added
  * delay            - delay between ajax request (bigger delay, lower server time request)
  * addontab         - add first visible element on tab or enter hit
  * addoncomma       - add first visible element when pressing the comma key
@@ -348,13 +348,13 @@
             holder.children("li.bit-box.deleted").removeClass("deleted");
           }
 
-          if ((event.keyCode == _key.enter || event.keyCode == _key.tab || event.keyCode == _key.comma) && checkFocusOn()) {
+          if ((event.keyCode == _key.enter || (event.keyCode == _key.tab && options.addontab) || (event.keyCode == _key.comma && options.addoncomma)) && checkFocusOn()) {
             var option = focuson;
             addItem(option.text(), option.attr("rel"), 0, 0, 1);
             return _preventDefault(event);
           }
 
-          if ((event.keyCode == _key.enter || event.keyCode == _key.tab || event.keyCode == _key.comma) && !checkFocusOn()) {
+          if ((event.keyCode == _key.enter || (event.keyCode == _key.tab && options.addontab) || (event.keyCode == _key.comma && options.addoncomma)) && !checkFocusOn()) {
             if (options.newel) {
               var value = xssPrevent($(this).val());
               addItem(value, value, 0, 0, 1);
