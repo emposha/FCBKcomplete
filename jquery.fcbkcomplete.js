@@ -240,7 +240,7 @@
             }
           }
 
-          if (event.keyCode != _key.downarrow && event.keyCode != _key.uparrow && event.keyCode!= _key.leftarrow && event.keyCode!= _key.rightarrow && etext.length > options.input_min_size) {
+          if (event.keyCode != _key.downarrow && event.keyCode != _key.uparrow && event.keyCode!= _key.leftarrow && event.keyCode!= _key.rightarrow && etext.length >= options.input_min_size) {
             load_feed(etext);
             complete.children(".default").hide();
             feed.show();
