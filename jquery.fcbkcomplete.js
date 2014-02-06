@@ -24,6 +24,7 @@
  * delay            - delay between ajax request (bigger delay, lower server time request)
  * addontab         - add first visible element on tab or enter hit
  * addoncomma       - add first visible element when pressing the comma key
+ * addonblur        - add first visible element when input loses focus
  * attachto         - after this element fcbkcomplete insert own elements
  * bricket          - use square bricket with select (needed for asp or php) enabled by default
  * input_tabindex   - the tabindex of the input element
@@ -192,6 +193,14 @@
             complete.fadeOut("fast");
           } else {
             input.focus();
+          }
+
+          if (options.addonblur) {
+            focuson = feed.children("li:visible:first");
+            if (focuson.length > 0) {
+              var option = focuson;
+              addItem(option.text(), option.attr("rel"), 0, 0, 1);
+            }
           }
         });
         
@@ -500,6 +509,7 @@
         newel: false,
         addontab: false,
         addoncomma: false,
+        addonblur: false,
         firstselected: false,
         filter_case: false,
         filter_selected: false,
