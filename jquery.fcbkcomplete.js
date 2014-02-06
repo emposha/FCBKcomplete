@@ -20,7 +20,7 @@
  * oncreate         - fire event on item create
  * onselect         - fire event on item select
  * onremove         - fire event on item remove
- * maxitimes        - maximum items that can be added
+ * maxitems         - maximum items that can be added
  * delay            - delay between ajax request (bigger delay, lower server time request)
  * addontab         - add first visible element on tab or enter hit
  * addoncomma       - add first visible element when pressing the comma key
