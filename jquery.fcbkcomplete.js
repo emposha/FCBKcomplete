@@ -267,6 +267,9 @@
       }
 
       function addMembers(etext, data) {
+        if (!options.filter_list_before_show) {
+            etext = '';
+        }
         feed.html('');
         if (!options.cache && data != null) {
           cache.clear();
@@ -526,7 +529,8 @@
         input_tabindex: 0,
         input_min_size: 1,
         input_name: "",
-        bricket: true
+        bricket: true,
+        filter_list_before_show: true
       },
       opt);
 
