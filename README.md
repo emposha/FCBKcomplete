@@ -1,6 +1,9 @@
 
 FCBKcomplete
 ============
+
+    FCBKcomplete  - please note this plugin is not supported anymore, for alternative use Select2 https://select2.github.io/
+
 FCBKcomplete is fancy facebook-like dynamic inputs with auto complete & pre added values.
 
 FCBKcomplete is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
