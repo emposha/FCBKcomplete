@@ -357,13 +357,13 @@
             holder.children("li.bit-box.deleted").removeClass("deleted");
           }
 
-          if ((event.keyCode == _key.enter || event.keyCode == _key.tab || event.keyCode == _key.comma) && checkFocusOn()) {
+          if ((event.keyCode == _key.enter || (event.keyCode == _key.tab && options.addontab) || (event.keyCode == _key.comma && options.addoncomma)) && checkFocusOn()) {
             var option = focuson;
             addItem(option.text(), option.attr("rel"), 0, 0, 1);
             return _preventDefault(event);
           }
 
-          if ((event.keyCode == _key.enter || event.keyCode == _key.tab || event.keyCode == _key.comma) && !checkFocusOn()) {
+          if ((event.keyCode == _key.enter || (event.keyCode == _key.tab && options.addontab) || (event.keyCode == _key.comma && options.addoncomma)) && !checkFocusOn()) {
             if (options.newel) {
               var value = xssPrevent($(this).val());
               addItem(value, value, 0, 0, 1);
