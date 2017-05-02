@@ -180,6 +180,29 @@
 
         holder.append(li.append(input));
 
+        // added paste action. 
+        input.bind("paste",function(e){
+          var textInput = jQuery(this);
+          setTimeout(function() {
+            var txt = textInput.val();
+            if(txt.indexOf(',')>=0 || txt.indexOf(';')>=0){
+              txt = txt.replace(',',';');
+
+              $.each(txt.split(';'),function(i, val) {
+                if(val.indexOf('@')>=0){
+                  val = val.substr(0, val.indexOf('@'));
+                }
+
+                if(val!=""){
+                  addItem(val, val, 0, 0, 0);
+                }
+              });
+              textInput.val("");
+            }
+          }, 200);
+
+        });
+
         input.focus( function() {
           isactive = true;
           if (maxItems()) {
