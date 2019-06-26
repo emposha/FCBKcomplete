@@ -49,7 +49,7 @@ Options
  * cache            - use cache
  * height           - maximum number of element shown before scroll will apear
  * newel            - show typed text like a element
- * firstselected    - automaticly select first element from dropdown
+ * firstselected    - automatically select first element from dropdown
  * filter_case      - case sensitive filter
  * filter_selected  - filter selected items from list
  * filter_begin     - filter only from begin
